@@ -9,9 +9,12 @@
 body{font-family:-apple-system,sans-serif;background:#0F172A;color:#fff}
 .carrossel{position:relative;width:100%;height:300px;background:#1E293B;overflow:hidden}
 .carrossel-track{display:flex;height:100%;transition:transform .4s ease}
-.carrossel-item{min-width:100%;height:100%;position:relative}
+.carrossel-item{min-width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center}
 .carrossel-item img{width:100%;height:100%;object-fit:cover}
-.carrossel-item video{width:100%;height:100%;object-fit:cover}
+.carrossel-item video{width:100%;height:100%;object-fit:cover;cursor:pointer}
+.play-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.3);transition:opacity .3s;pointer-events:none}
+.play-overlay.hidden{opacity:0}
+.play-btn-big{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;font-size:26px}
 .carrossel-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.5);color:#fff;border:none;width:40px;height:40px;border-radius:50%;font-size:18px;cursor:pointer;z-index:10;display:flex;align-items:center;justify-content:center}
 .carrossel-btn.prev{left:10px}
 .carrossel-btn.next{right:10px}
@@ -27,7 +30,7 @@ body{font-family:-apple-system,sans-serif;background:#0F172A;color:#fff}
 .thumb{min-width:60px;height:60px;border-radius:8px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:all .2s;position:relative}
 .thumb.active{border-color:#22C55E}
 .thumb img,.thumb video{width:100%;height:100%;object-fit:cover}
-.thumb-vid-icon{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.3);font-size:16px}
+.thumb-vid-icon{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.4);font-size:18px}
 .content{padding:20px 16px;padding-bottom:100px}
 .badge{display:inline-block;background:#22C55E20;color:#22C55E;font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;margin-bottom:12px;text-transform:uppercase}
 h1{font-size:22px;font-weight:800;margin-bottom:16px;line-height:1.3}
@@ -114,9 +117,13 @@ function renderizar(){
     <div class="carrossel" id="carrossel">
       <div class="carrossel-track" id="track">
         ${midias.map((m,i)=>`
-          <div class="carrossel-item">
+          <div class="carrossel-item" id="item-${i}">
             ${m.tipo==='video'
-              ?`<video src="${m.url}" ${i===0?'autoplay':''} muted loop playsinline></video><div class="tipo-badge-vid">🎥 Vídeo</div>`
+              ?`<video id="vid-${i}" src="${m.url}" muted playsinline loop preload="auto"></video>
+                <div class="play-overlay" id="overlay-${i}" onclick="togglePlay(${i})">
+                  <div class="play-btn-big">▶</div>
+                </div>
+                <div class="tipo-badge-vid">🎥 Vídeo</div>`
               :`<img src="${m.url}" alt="Foto ${i+1}">`}
           </div>`).join('')}
       </div>
@@ -131,7 +138,7 @@ function renderizar(){
         ${midias.map((m,i)=>`
           <div class="thumb ${i===0?'active':''}" onclick="irPara(${i})" id="thumb-${i}">
             ${m.tipo==='video'
-              ?`<video src="${m.url}" muted></video><div class="thumb-vid-icon">▶</div>`
+              ?`<video src="${m.url}" muted preload="metadata"></video><div class="thumb-vid-icon">▶</div>`
               :`<img src="${m.url}">`}
           </div>`).join('')}
       </div>`:''}
@@ -174,20 +181,62 @@ function renderizar(){
       <button class="btn-comprar" onclick="abrirModal()">🛒 COMPRAR AGORA — R$ ${projeto.preco}</button>
     </div>
   `;
+
+  // Se a primeira mídia for vídeo, dá play automático
+  verificarVideo(0);
+}
+
+function verificarVideo(index){
+  const vid=document.getElementById('vid-'+index);
+  if(!vid)return;
+  vid.play().then(()=>{
+    const overlay=document.getElementById('overlay-'+index);
+    if(overlay)overlay.classList.add('hidden');
+  }).catch(()=>{});
+}
+
+function pararTodosVideos(){
+  midias.forEach((_,i)=>{
+    const vid=document.getElementById('vid-'+i);
+    if(vid){
+      vid.pause();
+      vid.currentTime=0;
+      const overlay=document.getElementById('overlay-'+i);
+      if(overlay)overlay.classList.remove('hidden');
+    }
+  });
+}
+
+function togglePlay(i){
+  const vid=document.getElementById('vid-'+i);
+  const overlay=document.getElementById('overlay-'+i);
+  if(!vid)return;
+  if(vid.paused){
+    vid.play();
+    if(overlay)overlay.classList.add('hidden');
+  }else{
+    vid.pause();
+    if(overlay)overlay.classList.remove('hidden');
+  }
 }
 
 function moverCarrossel(dir){
+  pararTodosVideos();
   midiaAtual=(midiaAtual+dir+midias.length)%midias.length;
   atualizarCarrossel();
+  setTimeout(()=>verificarVideo(midiaAtual),400);
 }
 
 function irPara(i){
+  pararTodosVideos();
   midiaAtual=i;
   atualizarCarrossel();
+  setTimeout(()=>verificarVideo(midiaAtual),400);
 }
 
 function atualizarCarrossel(){
-  document.getElementById('track').style.transform=`translateX(-${midiaAtual*100}%)`;
+  const track=document.getElementById('track');
+  if(track)track.style.transform=`translateX(-${midiaAtual*100}%)`;
   document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===midiaAtual));
   document.querySelectorAll('.thumb').forEach((t,i)=>t.classList.toggle('active',i===midiaAtual));
   const counter=document.getElementById('counter');
