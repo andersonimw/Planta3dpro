@@ -13,9 +13,9 @@ body{font-family:-apple-system,sans-serif;background:#F1F5F9;color:#1E293B}
 .login-box p{font-size:14px;color:#64748B;margin-bottom:24px}
 .login-box input{width:100%;padding:13px;border:2px solid #E2E8F0;border-radius:8px;font-size:15px;margin-bottom:12px;font-family:inherit}
 .login-box input:focus{outline:none;border-color:#22C55E}
-.btn-green{width:100%;background:#22C55E;color:#fff;font-size:15px;font-weight:700;padding:14px;border:none;border-radius:8px;font-family:inherit}
-.btn-red{background:#EF4444;color:#fff;font-size:13px;font-weight:700;padding:8px 16px;border:none;border-radius:8px;font-family:inherit}
-.btn-blue{background:#3B82F6;color:#fff;font-size:13px;font-weight:700;padding:8px 16px;border:none;border-radius:8px;font-family:inherit}
+.btn-green{width:100%;background:#22C55E;color:#fff;font-size:15px;font-weight:700;padding:14px;border:none;border-radius:8px;font-family:inherit;cursor:pointer}
+.btn-red{background:#EF4444;color:#fff;font-size:13px;font-weight:700;padding:8px 16px;border:none;border-radius:8px;font-family:inherit;cursor:pointer}
+.btn-blue{background:#3B82F6;color:#fff;font-size:13px;font-weight:700;padding:8px 16px;border:none;border-radius:8px;font-family:inherit;cursor:pointer}
 .admin-screen{display:none;padding:16px;max-width:600px;margin:0 auto}
 .admin-header{background:#1E293B;color:#fff;padding:16px;border-radius:12px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between}
 .admin-header h1{font-size:18px;font-weight:800}
@@ -24,16 +24,29 @@ body{font-family:-apple-system,sans-serif;background:#F1F5F9;color:#1E293B}
 .card-admin h2{font-size:16px;font-weight:700;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid #F1F5F9}
 .form-group{margin-bottom:12px}
 .form-group label{display:block;font-size:13px;font-weight:600;color:#475569;margin-bottom:5px}
-.form-group input,.form-group select,.form-group textarea{width:100%;padding:11px;border:2px solid #E2E8F0;border-radius:8px;font-size:14px;font-family:inherit}
+.form-group input,.form-group select{width:100%;padding:11px;border:2px solid #E2E8F0;border-radius:8px;font-size:14px;font-family:inherit}
 .form-group input:focus,.form-group select:focus{outline:none;border-color:#22C55E}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.foto-preview{width:100%;height:160px;background:#F1F5F9;border-radius:8px;border:2px dashed #CBD5E1;display:flex;align-items:center;justify-content:center;font-size:13px;color:#94A3B8;margin-bottom:10px;overflow:hidden}
-.foto-preview img{width:100%;height:100%;object-fit:cover}
+.upload-area{border:2px dashed #CBD5E1;border-radius:10px;padding:24px;text-align:center;background:#F8FAFC;margin-bottom:12px;cursor:pointer;transition:all .2s}
+.upload-area:hover{border-color:#22C55E;background:#F0FDF4}
+.upload-area.dragover{border-color:#22C55E;background:#F0FDF4}
+.upload-icon{font-size:36px;margin-bottom:8px}
+.upload-text{font-size:14px;font-weight:600;color:#475569;margin-bottom:4px}
+.upload-sub{font-size:12px;color:#94A3B8}
+.preview-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.preview-item{position:relative;border-radius:8px;overflow:hidden;aspect-ratio:1;background:#E2E8F0}
+.preview-item img,.preview-item video{width:100%;height:100%;object-fit:cover}
+.preview-item .remove-btn{position:absolute;top:4px;right:4px;background:rgba(239,68,68,.9);color:#fff;border:none;border-radius:50%;width:22px;height:22px;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.preview-item .tipo-badge{position:absolute;bottom:4px;left:4px;background:rgba(0,0,0,.6);color:#fff;font-size:10px;padding:2px 6px;border-radius:4px}
+.upload-progress{background:#F1F5F9;border-radius:8px;padding:12px;margin-bottom:12px;display:none}
+.progress-bar{background:#E2E8F0;border-radius:4px;height:8px;margin-top:8px;overflow:hidden}
+.progress-fill{background:#22C55E;height:100%;border-radius:4px;transition:width .3s;width:0%}
 .projeto-item{background:#F8FAFC;border-radius:10px;padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;border:1px solid #E2E8F0}
-.projeto-item img{width:60px;height:60px;border-radius:8px;object-fit:cover;background:#E2E8F0}
+.projeto-thumb{width:60px;height:60px;border-radius:8px;object-fit:cover;background:#E2E8F0;flex-shrink:0}
 .projeto-info{flex:1}
 .projeto-info strong{font-size:14px;display:block}
 .projeto-info span{font-size:12px;color:#64748B}
+.projeto-media-count{font-size:11px;color:#22C55E;font-weight:600}
 .projeto-actions{display:flex;gap:8px}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:#1E293B;color:#fff;padding:12px 22px;border-radius:8px;font-size:14px;font-weight:600;opacity:0;transition:all .3s;z-index:500;white-space:nowrap;border-left:3px solid #22C55E}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -58,12 +71,22 @@ body{font-family:-apple-system,sans-serif;background:#F1F5F9;color:#1E293B}
 
 <div class="card-admin">
 <h2>➕ Adicionar Novo Projeto</h2>
+
 <div class="form-group">
-<label>Foto do Projeto</label>
-<div class="foto-preview" id="fotoPreview">📸 Clique para selecionar foto</div>
-<input type="file" id="fotoInput" accept="image/*" style="display:none" onchange="previewFoto(this)">
-<button class="btn-blue" onclick="document.getElementById('fotoInput').click()">📁 Selecionar Foto</button>
+<label>📸 Fotos e Vídeos do Projeto</label>
+<div class="upload-area" id="uploadArea" onclick="document.getElementById('arquivosInput').click()" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+<div class="upload-icon">📁</div>
+<div class="upload-text">Clique ou arraste arquivos aqui</div>
+<div class="upload-sub">Fotos (JPG, PNG, WEBP) e Vídeos (MP4, MOV) • Máx 50MB cada</div>
 </div>
+<input type="file" id="arquivosInput" accept="image/*,video/*" multiple style="display:none" onchange="previewArquivos(this.files)">
+<div class="preview-grid" id="previewGrid"></div>
+<div class="upload-progress" id="uploadProgress">
+<div style="font-size:13px;font-weight:600;color:#475569" id="uploadProgressText">Enviando arquivos...</div>
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+</div>
+</div>
+
 <div class="form-row">
 <div class="form-group">
 <label>Código</label>
@@ -84,34 +107,16 @@ body{font-family:-apple-system,sans-serif;background:#F1F5F9;color:#1E293B}
 <input type="text" id="titulo" placeholder="Casa Moderna 3 Quartos">
 </div>
 <div class="form-row">
-<div class="form-group">
-<label>Terreno</label>
-<input type="text" id="terreno" placeholder="10x14m">
-</div>
-<div class="form-group">
-<label>Área (m²)</label>
-<input type="text" id="area" placeholder="140">
-</div>
+<div class="form-group"><label>Terreno</label><input type="text" id="terreno" placeholder="10x14m"></div>
+<div class="form-group"><label>Área (m²)</label><input type="text" id="area" placeholder="140"></div>
 </div>
 <div class="form-row">
-<div class="form-group">
-<label>Quartos</label>
-<input type="number" id="quartos" placeholder="3" min="1">
-</div>
-<div class="form-group">
-<label>Vagas</label>
-<input type="number" id="vagas" placeholder="2" min="0">
-</div>
+<div class="form-group"><label>Quartos</label><input type="number" id="quartos" placeholder="3" min="1"></div>
+<div class="form-group"><label>Vagas</label><input type="number" id="vagas" placeholder="2" min="0"></div>
 </div>
 <div class="form-row">
-<div class="form-group">
-<label>Banheiros</label>
-<input type="number" id="banheiros" placeholder="2" min="1">
-</div>
-<div class="form-group">
-<label>Preço (R$)</label>
-<input type="text" id="preco" placeholder="290">
-</div>
+<div class="form-group"><label>Banheiros</label><input type="number" id="banheiros" placeholder="2" min="1"></div>
+<div class="form-group"><label>Preço (R$)</label><input type="text" id="preco" placeholder="290"></div>
 </div>
 <button class="btn-green" onclick="adicionarProjeto()" style="margin-top:8px">✅ SALVAR PROJETO</button>
 </div>
@@ -125,57 +130,92 @@ body{font-family:-apple-system,sans-serif;background:#F1F5F9;color:#1E293B}
 <div class="toast" id="toast"></div>
 
 <script>
-let projetos = [];
-let fotoArquivo = null;
+let projetos=[];
+let arquivosSelecionados=[];
+let arquivosUpload=[];
 
-async function fazerLogin() {
-  const senha = document.getElementById('senhaInput').value;
-  const res = await fetch('/login', {
-    method: 'POST',
-    headers: {'Content-Type':'application/x-www-form-urlencoded'},
-    body: 'senha=' + senha
-  });
-  const data = await res.json();
-  if (data.ok) {
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('adminScreen').style.display = 'block';
+async function fazerLogin(){
+  const senha=document.getElementById('senhaInput').value;
+  const res=await fetch('/login',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'senha='+senha});
+  const data=await res.json();
+  if(data.ok){
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('adminScreen').style.display='block';
     carregarProjetos();
-  } else {
-    showToast('❌ Senha incorreta!');
-  }
+  }else{showToast('❌ Senha incorreta!');}
 }
 
-function previewFoto(input) {
-  fotoArquivo = input.files[0];
-  const reader = new FileReader();
-  reader.onload = e => {
-    document.getElementById('fotoPreview').innerHTML = '<img src="'+e.target.result+'">';
-  };
-  reader.readAsDataURL(fotoArquivo);
+function handleDragOver(e){e.preventDefault();document.getElementById('uploadArea').classList.add('dragover');}
+function handleDragLeave(e){document.getElementById('uploadArea').classList.remove('dragover');}
+function handleDrop(e){
+  e.preventDefault();
+  document.getElementById('uploadArea').classList.remove('dragover');
+  previewArquivos(e.dataTransfer.files);
 }
 
-async function adicionarProjeto() {
-  let fotoUrl = '';
-  if (fotoArquivo) {
-    const formData = new FormData();
-    formData.append('foto', fotoArquivo);
-    const res = await fetch('/upload', { method: 'POST', body: formData });
-    const data = await res.json();
-    if (data.ok) fotoUrl = data.arquivo;
+function previewArquivos(files){
+  const novos=Array.from(files);
+  arquivosSelecionados=[...arquivosSelecionados,...novos];
+  renderPreview();
+}
+
+function renderPreview(){
+  const grid=document.getElementById('previewGrid');
+  if(arquivosSelecionados.length===0){grid.innerHTML='';return;}
+  grid.innerHTML=arquivosSelecionados.map((f,i)=>{
+    const url=URL.createObjectURL(f);
+    const isVideo=f.type.startsWith('video');
+    return `<div class="preview-item">
+      ${isVideo?`<video src="${url}" muted></video>`:`<img src="${url}">`}
+      <span class="tipo-badge">${isVideo?'🎥 Vídeo':'📸 Foto'}</span>
+      <button class="remove-btn" onclick="removerArquivo(${i})">✕</button>
+    </div>`;
+  }).join('');
+}
+
+function removerArquivo(i){
+  arquivosSelecionados.splice(i,1);
+  renderPreview();
+}
+
+async function uploadArquivos(){
+  if(arquivosSelecionados.length===0)return[];
+  const progressEl=document.getElementById('uploadProgress');
+  const progressFill=document.getElementById('progressFill');
+  const progressText=document.getElementById('uploadProgressText');
+  progressEl.style.display='block';
+  progressText.textContent='Enviando '+arquivosSelecionados.length+' arquivo(s)...';
+  progressFill.style.width='10%';
+  const formData=new FormData();
+  arquivosSelecionados.forEach(f=>formData.append('arquivos',f));
+  progressFill.style.width='50%';
+  const res=await fetch('/upload-multiplo',{method:'POST',body:formData});
+  progressFill.style.width='100%';
+  const data=await res.json();
+  progressEl.style.display='none';
+  if(data.ok)return data.arquivos;
+  return[];
+}
+
+async function adicionarProjeto(){
+  if(!document.getElementById('titulo').value||!document.getElementById('codigo').value){
+    showToast('⚠️ Preencha código e título!');return;
   }
-  const projeto = {
-    codigo: document.getElementById('codigo').value,
-    categoria: document.getElementById('categoria').value,
-    titulo: document.getElementById('titulo').value,
-    terreno: document.getElementById('terreno').value,
-    area: document.getElementById('area').value,
-    quartos: document.getElementById('quartos').value,
-    vagas: document.getElementById('vagas').value,
-    banheiros: document.getElementById('banheiros').value,
-    preco: document.getElementById('preco').value,
-    foto: fotoUrl
+  showToast('⏳ Enviando arquivos...');
+  const arquivos=await uploadArquivos();
+  const projeto={
+    codigo:document.getElementById('codigo').value,
+    categoria:document.getElementById('categoria').value,
+    titulo:document.getElementById('titulo').value,
+    terreno:document.getElementById('terreno').value,
+    area:document.getElementById('area').value,
+    quartos:document.getElementById('quartos').value,
+    vagas:document.getElementById('vagas').value,
+    banheiros:document.getElementById('banheiros').value,
+    preco:document.getElementById('preco').value,
+    foto:arquivos.length>0?arquivos[0].url:'',
+    midia:arquivos
   };
-  if (!projeto.titulo || !projeto.codigo) { showToast('⚠️ Preencha código e título!'); return; }
   projetos.push(projeto);
   await salvarProjetos();
   renderLista();
@@ -183,29 +223,26 @@ async function adicionarProjeto() {
   showToast('✅ Projeto salvo com sucesso!');
 }
 
-async function salvarProjetos() {
-  await fetch('/salvar-projetos', {
-    method: 'POST',
-    headers: {'Content-Type':'application/json'},
-    body: JSON.stringify(projetos)
-  });
+async function salvarProjetos(){
+  await fetch('/salvar-projetos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(projetos)});
 }
 
-async function carregarProjetos() {
-  const res = await fetch('/projetos');
-  projetos = await res.json();
+async function carregarProjetos(){
+  const res=await fetch('/projetos');
+  projetos=await res.json();
   renderLista();
 }
 
-function renderLista() {
-  const lista = document.getElementById('listaProjetos');
-  if (projetos.length === 0) { lista.innerHTML = '<p style="color:#94A3B8;font-size:14px">Nenhum projeto ainda.</p>'; return; }
-  lista.innerHTML = projetos.map((p, i) => `
+function renderLista(){
+  const lista=document.getElementById('listaProjetos');
+  if(projetos.length===0){lista.innerHTML='<p style="color:#94A3B8;font-size:14px">Nenhum projeto ainda.</p>';return;}
+  lista.innerHTML=projetos.map((p,i)=>`
     <div class="projeto-item">
-      <img src="${p.foto || ''}" onerror="this.style.background='#E2E8F0'">
+      <img class="projeto-thumb" src="${p.foto||''}" onerror="this.style.background='#E2E8F0';this.style.display='block'">
       <div class="projeto-info">
         <strong>${p.codigo} — ${p.titulo}</strong>
         <span>${p.area}m² • ${p.quartos} quartos • R$ ${p.preco}</span>
+        <div class="projeto-media-count">${p.midia?p.midia.length:p.foto?1:0} arquivo(s) de mídia</div>
       </div>
       <div class="projeto-actions">
         <button class="btn-red" onclick="deletar(${i})">🗑️</button>
@@ -214,24 +251,24 @@ function renderLista() {
   `).join('');
 }
 
-async function deletar(i) {
-  projetos.splice(i, 1);
+async function deletar(i){
+  projetos.splice(i,1);
   await salvarProjetos();
   renderLista();
   showToast('🗑️ Projeto removido!');
 }
 
-function limparForm() {
-  ['codigo','titulo','terreno','area','quartos','vagas','banheiros','preco'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('fotoPreview').innerHTML = '📸 Clique para selecionar foto';
-  fotoArquivo = null;
+function limparForm(){
+  ['codigo','titulo','terreno','area','quartos','vagas','banheiros','preco'].forEach(id=>document.getElementById(id).value='');
+  arquivosSelecionados=[];
+  renderPreview();
 }
 
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
+  setTimeout(()=>t.classList.remove('show'),3000);
 }
 </script>
 </body>

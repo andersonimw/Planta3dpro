@@ -14,10 +14,21 @@ const storage = multer.diskStorage({
     cb(null, dir);
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
+    cb(null, Date.now() + '-' + Math.random().toString(36).substr(2,6) + path.extname(file.originalname));
   }
 });
-const upload = multer({ storage });
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 50 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    const allowed = /jpeg|jpg|png|gif|webp|mp4|mov|avi|webm/;
+    const ext = allowed.test(path.extname(file.originalname).toLowerCase());
+    const mime = allowed.test(file.mimetype);
+    if (ext && mime) return cb(null, true);
+    cb(new Error('Arquivo não permitido'));
+  }
+});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -25,16 +36,17 @@ app.use(express.static('.'));
 app.use('/imagens', express.static('imagens'));
 
 app.post('/login', (req, res) => {
-  if (req.body.senha === SENHA) {
-    res.json({ ok: true });
-  } else {
-    res.json({ ok: false });
-  }
+  if (req.body.senha === SENHA) res.json({ ok: true });
+  else res.json({ ok: false });
 });
 
-app.post('/upload', upload.single('foto'), (req, res) => {
-  if (!req.file) return res.json({ ok: false });
-  res.json({ ok: true, arquivo: '/imagens/' + req.file.filename });
+app.post('/upload-multiplo', upload.array('arquivos', 20), (req, res) => {
+  if (!req.files || req.files.length === 0) return res.json({ ok: false });
+  const arquivos = req.files.map(f => ({
+    url: '/imagens/' + f.filename,
+    tipo: f.mimetype.startsWith('video') ? 'video' : 'imagem'
+  }));
+  res.json({ ok: true, arquivos });
 });
 
 app.post('/salvar-projetos', (req, res) => {
