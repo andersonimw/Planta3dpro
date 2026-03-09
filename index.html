@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Planta 3D Pro</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--green:#22C55E;--navy:#1E293B;--light:#F1F5F9;--white:#fff;--border:#E2E8F0;--muted:#64748B}
+body{font-family:-apple-system,sans-serif;background:var(--light);color:var(--navy);max-width:480px;margin:0 auto}
+nav{background:#fff;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid var(--border);box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.logo{font-size:17px;font-weight:700;color:var(--navy)}.logo span{color:var(--green)}
+.hero{background:linear-gradient(160deg,#0F172A,#1E293B);padding:28px 16px 32px;color:#fff;text-align:center}
+.hero-tag{display:inline-block;background:var(--green);color:#fff;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:4px 14px;border-radius:20px;margin-bottom:14px}
+.hero h1{font-size:24px;font-weight:800;line-height:1.25;margin-bottom:10px}
+.hero h1 span{color:var(--green)}
+.hero p{font-size:14px;color:rgba(255,255,255,.72);line-height:1.6;margin-bottom:22px}
+.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}
+.benefit{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:12px 10px;text-align:center}
+.benefit-icon{font-size:22px;margin-bottom:6px;display:block}
+.benefit-title{font-size:12px;font-weight:600;color:#fff;display:block;margin-bottom:3px}
+.benefit-desc{font-size:11px;color:rgba(255,255,255,.6);line-height:1.4}
+.hero-cta{display:block;width:100%;background:var(--green);color:#fff;font-size:15px;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:16px;border-radius:10px;border:none;text-decoration:none;text-align:center;box-shadow:0 4px 16px rgba(34,197,94,.4)}
+.filters{background:#1E293B;padding:16px}
+.filters-title{color:#fff;font-size:14px;font-weight:700;margin-bottom:12px}
+.filter-select{width:100%;padding:12px 14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:8px;color:rgba(255,255,255,.85);font-size:14px;appearance:none;font-family:inherit;margin-bottom:10px}
+.filter-btn{width:100%;margin-top:4px;background:var(--green);color:#fff;font-size:14px;font-weight:700;padding:13px;border:none;border-radius:8px;font-family:inherit}
+.section-header{padding:20px 16px 12px;display:flex;align-items:center;justify-content:space-between}
+.section-header h2{font-size:17px;font-weight:700}
+.result-count{font-size:13px;color:var(--muted)}
+.cat-pills{display:flex;gap:8px;padding:0 16px 16px;overflow-x:auto;scrollbar-width:none}
+.cat-pill{white-space:nowrap;padding:7px 16px;border-radius:20px;font-size:13px;font-weight:600;border:2px solid var(--border);background:#fff;color:var(--muted);font-family:inherit}
+.cat-pill.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.cards-list{padding:0 16px 80px;display:flex;flex-direction:column;gap:16px}
+.card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.card-img{width:100%;height:200px;background:linear-gradient(135deg,#1E293B,#334155);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.card-img img{width:100%;height:100%;object-fit:cover}
+.card-img-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:48px}
+.cat-badge{position:absolute;top:12px;left:12px;background:var(--green);color:#fff;font-size:12px;font-weight:700;padding:5px 14px;border-radius:20px}
+.cat-badge.sobrado{background:#3B82F6}
+.cat-badge.comercial{background:#F97316}
+.cat-badge.alto{background:#8B5CF6}
+.card-body{padding:16px}
+.card-code{font-size:12px;font-weight:700;color:var(--green);margin-bottom:6px}
+.card-title{font-size:16px;font-weight:800;color:var(--navy);line-height:1.3;margin-bottom:14px;text-transform:uppercase}
+.card-specs{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.spec-row{display:flex;align-items:center;gap:10px;font-size:13px}
+.card-btn{display:block;width:100%;background:var(--navy);color:#fff;font-size:14px;font-weight:700;text-align:center;padding:14px;border-radius:8px;border:none;font-family:inherit;cursor:pointer;text-decoration:none}
+.empty-state{text-align:center;padding:40px 20px;color:var(--muted)}
+.empty-state div{font-size:48px;margin-bottom:12px}
+.bottom-nav{background:#fff;padding:10px 0 14px;display:flex;justify-content:space-around;border-top:1px solid var(--border);position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;z-index:99}
+.bnav-item{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:600;color:var(--muted);background:none;border:none;font-family:inherit;min-width:64px}
+.bnav-item.active{color:var(--green)}
+.bnav-icon{font-size:20px}
+.float-cart{position:fixed;bottom:70px;right:16px;width:54px;height:54px;background:var(--navy);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;border:none;z-index:150;box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.cart-badge{position:absolute;top:-4px;right:-4px;width:20px;height:20px;background:var(--green);border-radius:50%;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;color:#fff}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--navy);color:#fff;padding:12px 22px;border-radius:8px;font-size:14px;font-weight:600;opacity:0;transition:all .3s;z-index:500;white-space:nowrap;pointer-events:none;border-left:3px solid var(--green)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<nav><div class="logo">Planta 3D<span> Pro</span></div><span>☰</span></nav>
+<div class="hero">
+<div class="hero-tag">🏆 Projetos Profissionais</div>
+<h1>Plantas 3D <span>Profissionais</span><br>para sua Obra</h1>
+<p>Projetos completos com planta baixa, vistas 3D e arquivos editáveis.</p>
+<div class="hero-grid">
+<div class="benefit"><span class="benefit-icon">⚡</span><span class="benefit-title">Entrega Imediata</span><span class="benefit-desc">Download após pagamento</span></div>
+<div class="benefit"><span class="benefit-icon">🔒</span><span class="benefit-title">Compra Segura</span><span class="benefit-desc">Pix, cartão ou boleto</span></div>
+<div class="benefit"><span class="benefit-icon">📐</span><span class="benefit-title">DWG + PDF</span><span class="benefit-desc">Arquivo editável incluso</span></div>
+<div class="benefit"><span class="benefit-icon">💬</span><span class="benefit-title">Suporte WhatsApp</span><span class="benefit-desc">Atendimento direto</span></div>
+</div>
+<a href="#catalogo" class="hero-cta">🔍 VER TODOS OS PROJETOS</a>
+</div>
+<div class="filters">
+<div class="filters-title">🔍 Encontre Seu Projeto Ideal</div>
+<select class="filter-select" id="filtCat"><option value="">Todas as Categorias</option><option value="terrea">Casa Térrea</option><option value="sobrado">Sobrado</option><option value="comercial">Comercial</option><option value="alto">Alto Padrão</option></select>
+<select class="filter-select" id="filtQ"><option value="">Quartos</option><option value="2">2 Quartos</option><option value="3">3 Quartos</option><option value="4">4+ Quartos</option></select>
+<button class="filter-btn" onclick="aplicarFiltros()">BUSCAR PROJETOS</button>
+</div>
+<div id="catalogo">
+<div class="section-header"><h2>Projetos Disponíveis</h2><span class="result-count" id="resultCount">carregando...</span></div>
+<div class="cat-pills">
+<button class="cat-pill active" onclick="filterPill(this,'')">Todos</button>
+<button class="cat-pill" onclick="filterPill(this,'terrea')">Casa Térrea</button>
+<button class="cat-pill" onclick="filterPill(this,'sobrado')">Sobrado</button>
+<button class="cat-pill" onclick="filterPill(this,'comercial')">Comercial</button>
+<button class="cat-pill" onclick="filterPill(this,'alto')">Alto Padrão</button>
+</div>
+<div class="cards-list" id="cardsList"><div class="empty-state"><div>⏳</div><p>Carregando projetos...</p></div></div>
+</div>
+<div class="bottom-nav">
+<button class="bnav-item active"><span class="bnav-icon">🏠</span>Início</button>
+<button class="bnav-item" onclick="window.location.href='#catalogo'"><span class="bnav-icon">📂</span>Projetos</button>
+<button class="bnav-item" onclick="window.open('https://wa.me/5521978819116')"><span class="bnav-icon">💬</span>WhatsApp</button>
+<button class="bnav-item" onclick="window.location.href='admin.html'"><span class="bnav-icon">⚙️</span>Admin</button>
+</div>
+
+<button class="float-cart" onclick="showToast('Carrinho vazio!')">🛒<span class="cart-badge" id="cartCount">0</span></button>
+
+<a href="https://wa.me/5521978819116" target="_blank" style="position:fixed;bottom:75px;left:16px;width:54px;height:54px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;text-decoration:none;box-shadow:0 4px 16px rgba(37,211,102,.5);z-index:200;">💬</a>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let todosProj=[];
+let filtroAtivo='';
+
+async function carregarProjetos(){
+try{
+const res=await fetch('/projetos');
+todosProj=await res.json();
+renderCards(todosProj);
+}catch(e){
+document.getElementById('cardsList').innerHTML='<div class="empty-state"><div>😕</div><p>Erro ao carregar projetos.</p></div>';
+}
+}
+
+function renderCards(lista){
+const el=document.getElementById('cardsList');
+document.getElementById('resultCount').textContent=lista.length+' projeto'+(lista.length!==1?'s':'');
+if(lista.length===0){el.innerHTML='<div class="empty-state"><div>🏗️</div><p>Nenhum projeto encontrado.</p></div>';return;}
+el.innerHTML=lista.map((p)=>`
+<div class="card">
+<div class="card-img">
+${p.foto?`<img src="${p.foto}" alt="${p.titulo}">`:'<div class="card-img-placeholder">🏠</div>'}
+<span class="cat-badge ${p.categoria}">${catLabel(p.categoria)}</span>
+</div>
+<div class="card-body">
+<div class="card-code">Código do Projeto: ${p.codigo}</div>
+<div class="card-title">${p.titulo}</div>
+<div class="card-specs">
+<div class="spec-row">📐 Terreno: ${p.terreno}</div>
+<div class="spec-row">🏠 Área: ${p.area}m²</div>
+<div class="spec-row">🛏 Quartos: ${p.quartos}</div>
+<div class="spec-row">🚗 Vagas: ${p.vagas}</div>
+<div class="spec-row">🚿 Banheiros: ${p.banheiros}</div>
+</div>
+<a href="/projeto.html?codigo=${p.codigo}" class="card-btn">Ver Projeto →</a>
+</div>
+</div>
+`).join('');
+}
+
+function catLabel(c){
+const m={terrea:'Casa Térrea',sobrado:'Sobrado',comercial:'Comercial',alto:'Alto Padrão'};
+return m[c]||c;
+}
+
+function filterPill(btn,cat){
+document.querySelectorAll('.cat-pill').forEach(b=>b.classList.remove('active'));
+btn.classList.add('active');
+filtroAtivo=cat;
+aplicarFiltros();
+}
+
+function aplicarFiltros(){
+let lista=todosProj;
+if(filtroAtivo)lista=lista.filter(p=>p.categoria===filtroAtivo);
+const q=document.getElementById('filtQ').value;
+if(q==='4')lista=lista.filter(p=>parseInt(p.quartos)>=4);
+else if(q)lista=lista.filter(p=>p.quartos===q);
+const cat=document.getElementById('filtCat').value;
+if(cat)lista=lista.filter(p=>p.categoria===cat);
+renderCards(lista);
+}
+
+function showToast(msg){
+const t=document.getElementById('toast');
+t.textContent=msg;
+t.classList.add('show');
+setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+carregarProjetos();
+</script>
+</body>
+</html>

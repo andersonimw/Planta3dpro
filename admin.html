@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel Admin — Planta 3D Pro</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,sans-serif;background:#F1F5F9;color:#1E293B}
+.login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.login-box{background:#fff;border-radius:16px;padding:32px;width:100%;max-width:360px;box-shadow:0 4px 24px rgba(0,0,0,.1)}
+.login-box h1{font-size:22px;font-weight:800;margin-bottom:6px}
+.login-box p{font-size:14px;color:#64748B;margin-bottom:24px}
+.login-box input{width:100%;padding:13px;border:2px solid #E2E8F0;border-radius:8px;font-size:15px;margin-bottom:12px;font-family:inherit}
+.login-box input:focus{outline:none;border-color:#22C55E}
+.btn-green{width:100%;background:#22C55E;color:#fff;font-size:15px;font-weight:700;padding:14px;border:none;border-radius:8px;font-family:inherit}
+.btn-red{background:#EF4444;color:#fff;font-size:13px;font-weight:700;padding:8px 16px;border:none;border-radius:8px;font-family:inherit}
+.btn-blue{background:#3B82F6;color:#fff;font-size:13px;font-weight:700;padding:8px 16px;border:none;border-radius:8px;font-family:inherit}
+.admin-screen{display:none;padding:16px;max-width:600px;margin:0 auto}
+.admin-header{background:#1E293B;color:#fff;padding:16px;border-radius:12px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between}
+.admin-header h1{font-size:18px;font-weight:800}
+.admin-header span{font-size:13px;color:#22C55E;font-weight:600}
+.card-admin{background:#fff;border-radius:12px;padding:20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.card-admin h2{font-size:16px;font-weight:700;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid #F1F5F9}
+.form-group{margin-bottom:12px}
+.form-group label{display:block;font-size:13px;font-weight:600;color:#475569;margin-bottom:5px}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:11px;border:2px solid #E2E8F0;border-radius:8px;font-size:14px;font-family:inherit}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:#22C55E}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.foto-preview{width:100%;height:160px;background:#F1F5F9;border-radius:8px;border:2px dashed #CBD5E1;display:flex;align-items:center;justify-content:center;font-size:13px;color:#94A3B8;margin-bottom:10px;overflow:hidden}
+.foto-preview img{width:100%;height:100%;object-fit:cover}
+.projeto-item{background:#F8FAFC;border-radius:10px;padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;border:1px solid #E2E8F0}
+.projeto-item img{width:60px;height:60px;border-radius:8px;object-fit:cover;background:#E2E8F0}
+.projeto-info{flex:1}
+.projeto-info strong{font-size:14px;display:block}
+.projeto-info span{font-size:12px;color:#64748B}
+.projeto-actions{display:flex;gap:8px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:#1E293B;color:#fff;padding:12px 22px;border-radius:8px;font-size:14px;font-weight:600;opacity:0;transition:all .3s;z-index:500;white-space:nowrap;border-left:3px solid #22C55E}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<div class="login-screen" id="loginScreen">
+<div class="login-box">
+<h1>🔐 Painel Admin</h1>
+<p>Planta 3D Pro — Área restrita</p>
+<input type="password" id="senhaInput" placeholder="Digite a senha" onkeydown="if(event.key==='Enter')fazerLogin()">
+<button class="btn-green" onclick="fazerLogin()">ENTRAR</button>
+</div>
+</div>
+
+<div class="admin-screen" id="adminScreen">
+<div class="admin-header">
+<h1>⚙️ Painel Admin</h1>
+<span>Planta 3D Pro</span>
+</div>
+
+<div class="card-admin">
+<h2>➕ Adicionar Novo Projeto</h2>
+<div class="form-group">
+<label>Foto do Projeto</label>
+<div class="foto-preview" id="fotoPreview">📸 Clique para selecionar foto</div>
+<input type="file" id="fotoInput" accept="image/*" style="display:none" onchange="previewFoto(this)">
+<button class="btn-blue" onclick="document.getElementById('fotoInput').click()">📁 Selecionar Foto</button>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label>Código</label>
+<input type="text" id="codigo" placeholder="P07">
+</div>
+<div class="form-group">
+<label>Categoria</label>
+<select id="categoria">
+<option value="terrea">Casa Térrea</option>
+<option value="sobrado">Sobrado</option>
+<option value="comercial">Comercial</option>
+<option value="alto">Alto Padrão</option>
+</select>
+</div>
+</div>
+<div class="form-group">
+<label>Título do Projeto</label>
+<input type="text" id="titulo" placeholder="Casa Moderna 3 Quartos">
+</div>
+<div class="form-row">
+<div class="form-group">
+<label>Terreno</label>
+<input type="text" id="terreno" placeholder="10x14m">
+</div>
+<div class="form-group">
+<label>Área (m²)</label>
+<input type="text" id="area" placeholder="140">
+</div>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label>Quartos</label>
+<input type="number" id="quartos" placeholder="3" min="1">
+</div>
+<div class="form-group">
+<label>Vagas</label>
+<input type="number" id="vagas" placeholder="2" min="0">
+</div>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label>Banheiros</label>
+<input type="number" id="banheiros" placeholder="2" min="1">
+</div>
+<div class="form-group">
+<label>Preço (R$)</label>
+<input type="text" id="preco" placeholder="290">
+</div>
+</div>
+<button class="btn-green" onclick="adicionarProjeto()" style="margin-top:8px">✅ SALVAR PROJETO</button>
+</div>
+
+<div class="card-admin">
+<h2>📋 Projetos Cadastrados</h2>
+<div id="listaProjetos"><p style="color:#94A3B8;font-size:14px">Nenhum projeto ainda.</p></div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let projetos = [];
+let fotoArquivo = null;
+
+async function fazerLogin() {
+  const senha = document.getElementById('senhaInput').value;
+  const res = await fetch('/login', {
+    method: 'POST',
+    headers: {'Content-Type':'application/x-www-form-urlencoded'},
+    body: 'senha=' + senha
+  });
+  const data = await res.json();
+  if (data.ok) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminScreen').style.display = 'block';
+    carregarProjetos();
+  } else {
+    showToast('❌ Senha incorreta!');
+  }
+}
+
+function previewFoto(input) {
+  fotoArquivo = input.files[0];
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('fotoPreview').innerHTML = '<img src="'+e.target.result+'">';
+  };
+  reader.readAsDataURL(fotoArquivo);
+}
+
+async function adicionarProjeto() {
+  let fotoUrl = '';
+  if (fotoArquivo) {
+    const formData = new FormData();
+    formData.append('foto', fotoArquivo);
+    const res = await fetch('/upload', { method: 'POST', body: formData });
+    const data = await res.json();
+    if (data.ok) fotoUrl = data.arquivo;
+  }
+  const projeto = {
+    codigo: document.getElementById('codigo').value,
+    categoria: document.getElementById('categoria').value,
+    titulo: document.getElementById('titulo').value,
+    terreno: document.getElementById('terreno').value,
+    area: document.getElementById('area').value,
+    quartos: document.getElementById('quartos').value,
+    vagas: document.getElementById('vagas').value,
+    banheiros: document.getElementById('banheiros').value,
+    preco: document.getElementById('preco').value,
+    foto: fotoUrl
+  };
+  if (!projeto.titulo || !projeto.codigo) { showToast('⚠️ Preencha código e título!'); return; }
+  projetos.push(projeto);
+  await salvarProjetos();
+  renderLista();
+  limparForm();
+  showToast('✅ Projeto salvo com sucesso!');
+}
+
+async function salvarProjetos() {
+  await fetch('/salvar-projetos', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(projetos)
+  });
+}
+
+async function carregarProjetos() {
+  const res = await fetch('/projetos');
+  projetos = await res.json();
+  renderLista();
+}
+
+function renderLista() {
+  const lista = document.getElementById('listaProjetos');
+  if (projetos.length === 0) { lista.innerHTML = '<p style="color:#94A3B8;font-size:14px">Nenhum projeto ainda.</p>'; return; }
+  lista.innerHTML = projetos.map((p, i) => `
+    <div class="projeto-item">
+      <img src="${p.foto || ''}" onerror="this.style.background='#E2E8F0'">
+      <div class="projeto-info">
+        <strong>${p.codigo} — ${p.titulo}</strong>
+        <span>${p.area}m² • ${p.quartos} quartos • R$ ${p.preco}</span>
+      </div>
+      <div class="projeto-actions">
+        <button class="btn-red" onclick="deletar(${i})">🗑️</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function deletar(i) {
+  projetos.splice(i, 1);
+  await salvarProjetos();
+  renderLista();
+  showToast('🗑️ Projeto removido!');
+}
+
+function limparForm() {
+  ['codigo','titulo','terreno','area','quartos','vagas','banheiros','preco'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('fotoPreview').innerHTML = '📸 Clique para selecionar foto';
+  fotoArquivo = null;
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Detalhes do Projeto — Planta 3D Pro</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--green:#22C55E;--navy:#1E293B;--light:#F1F5F9;--border:#E2E8F0;--muted:#64748B}
+body{font-family:-apple-system,sans-serif;background:var(--light);color:var(--navy);max-width:480px;margin:0 auto}
+.top-bar{background:#fff;padding:14px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:100;border-bottom:1px solid var(--border);box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.back-btn{background:none;border:none;font-size:22px;cursor:pointer;padding:0}
+.top-bar h1{font-size:16px;font-weight:700}
+.hero-img{width:100%;height:260px;background:linear-gradient(135deg,#1E293B,#334155);position:relative;overflow:hidden}
+.hero-img img{width:100%;height:100%;object-fit:cover}
+.hero-img-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:72px}
+.cat-badge{position:absolute;top:16px;left:16px;background:var(--green);color:#fff;font-size:12px;font-weight:700;padding:6px 16px;border-radius:20px}
+.cat-badge.sobrado{background:#3B82F6}
+.cat-badge.comercial{background:#F97316}
+.cat-badge.alto{background:#8B5CF6}
+.content{padding:20px 16px 120px}
+.project-code{display:inline-block;background:#FEF9C3;color:#854D0E;font-size:12px;font-weight:800;padding:4px 12px;border-radius:6px;margin-bottom:10px}
+.project-title{font-size:22px;font-weight:900;line-height:1.2;margin-bottom:16px;text-transform:uppercase}
+.specs-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.spec-card{background:#fff;border-radius:10px;padding:14px;text-align:center;border:1px solid var(--border)}
+.spec-card .icon{font-size:22px;margin-bottom:6px;display:block}
+.spec-card .val{font-size:16px;font-weight:800;display:block;color:var(--navy)}
+.spec-card .label{font-size:11px;color:var(--muted);display:block;margin-top:2px}
+.price-box{background:#fff;border-radius:12px;padding:18px;margin-bottom:20px;border:1px solid var(--border)}
+.price-old{font-size:13px;color:var(--muted);text-decoration:line-through;margin-bottom:4px}
+.price-main{font-size:32px;font-weight:900;color:var(--navy)}
+.price-pix{font-size:13px;color:var(--green);font-weight:600;margin-top:4px}
+.section-title{font-size:16px;font-weight:800;margin-bottom:12px;margin-top:20px}
+.includes-list{background:#fff;border-radius:12px;padding:16px;border:1px solid var(--border)}
+.include-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--light);font-size:14px}
+.include-item:last-child{border-bottom:none}
+.include-item span{color:var(--green);font-size:18px;font-weight:700}
+.delivery-box{background:#F0FDF4;border:1px solid #BBF7D0;border-radius:12px;padding:16px;margin-top:16px}
+.delivery-box strong{font-size:14px;color:#166534;display:block;margin-bottom:4px}
+.delivery-box p{font-size:13px;color:#166534}
+.buy-bar{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;background:#fff;padding:16px;border-top:1px solid var(--border);display:flex;gap:10px;z-index:200}
+.whats-btn{width:54px;height:54px;background:#25D366;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:24px;text-decoration:none;flex-shrink:0}
+.buy-btn{flex:1;background:var(--green);color:#fff;font-size:16px;font-weight:900;letter-spacing:1px;text-transform:uppercase;padding:16px;border-radius:10px;border:none;font-family:inherit}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--navy);color:#fff;padding:12px 22px;border-radius:8px;font-size:14px;font-weight:600;opacity:0;transition:all .3s;z-index:500;white-space:nowrap;pointer-events:none;border-left:3px solid var(--green)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.modal-overlay{display:none;position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);align-items:flex-end;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal-sheet{background:#fff;width:100%;max-width:480px;border-radius:20px 20px 0 0;padding:20px 20px 32px;animation:slideUp .3s ease}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px}
+.modal-title{font-size:18px;font-weight:800;margin-bottom:4px}
+.modal-sub{font-size:13px;color:var(--muted);margin-bottom:20px}
+.modal-price-box{background:var(--light);border-radius:10px;padding:16px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center}
+.modal-price-label{font-size:12px;color:var(--muted);text-transform:uppercase}
+.modal-price-value{font-size:28px;font-weight:900}
+.payment-opts{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.pay-opt{display:flex;align-items:center;gap:14px;padding:14px;border:2px solid var(--border);border-radius:10px;background:#fff}
+.pay-opt.selected{border-color:var(--green);background:#F0FDF4}
+.pay-icon{font-size:24px}
+.pay-info strong{font-size:14px;display:block}
+.pay-info span{font-size:12px;color:var(--muted)}
+.confirm-btn{display:block;width:100%;background:var(--green);color:#fff;font-size:16px;font-weight:900;letter-spacing:1px;text-transform:uppercase;padding:17px;border-radius:10px;border:none;font-family:inherit;margin-bottom:12px}
+.cancel-btn{display:block;width:100%;text-align:center;background:none;border:none;color:var(--muted);font-size:14px;font-family:inherit;padding:8px}
+.loading{text-align:center;padding:60px 20px;color:var(--muted)}
+.loading div{font-size:48px;margin-bottom:12px}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+<button class="back-btn" onclick="history.back()">←</button>
+<h1 id="topTitle">Carregando...</h1>
+</div>
+
+<div id="pageContent">
+<div class="loading"><div>⏳</div><p>Carregando projeto...</p></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="modal-overlay" id="purchaseModal" onclick="closeBg(event)">
+<div class="modal-sheet">
+<div class="modal-handle"></div>
+<div class="modal-title" id="modalTitle">Adquirir Projeto</div>
+<div class="modal-sub" id="modalSub">Escolha a forma de pagamento</div>
+<div class="modal-price-box">
+<span class="modal-price-label">Valor</span>
+<span class="modal-price-value" id="modalPrice">R$ 0</span>
+</div>
+<div class="payment-opts">
+<div class="pay-opt selected" onclick="selectPay(this)">
+<span class="pay-icon">⚡</span>
+<div class="pay-info"><strong>Pix — 10% desconto</strong><span>Aprovação imediata</span></div>
+</div>
+<div class="pay-opt" onclick="selectPay(this)">
+<span class="pay-icon">💳</span>
+<div class="pay-info"><strong>Cartão de Crédito</strong><span>Até 12x sem juros</span></div>
+</div>
+<div class="pay-opt" onclick="selectPay(this)">
+<span class="pay-icon">📄</span>
+<div class="pay-info"><strong>Boleto Bancário</strong><span>Vencimento em 3 dias</span></div>
+</div>
+</div>
+<button class="confirm-btn" onclick="confirmBuy()">CONFIRMAR PAGAMENTO →</button>
+<button class="cancel-btn" onclick="closeModal()">Cancelar</button>
+</div>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const codigo = params.get('codigo');
+
+async function carregarProjeto() {
+  try {
+    const res = await fetch('/projeto/' + codigo);
+    if (!res.ok) throw new Error();
+    const p = await res.json();
+    renderProjeto(p);
+  } catch(e) {
+    document.getElementById('pageContent').innerHTML = '<div class="loading"><div>😕</div><p>Projeto não encontrado.</p></div>';
+  }
+}
+
+function renderProjeto(p) {
+  document.getElementById('topTitle').textContent = p.codigo + ' — ' + p.titulo;
+  const precoNum = parseFloat(p.preco);
+  const precoOld = (precoNum * 1.2).toFixed(0);
+  const precoPix = (precoNum * 0.9).toFixed(0);
+  document.getElementById('pageContent').innerHTML = `
+    <div class="hero-img">
+      ${p.foto ? `<img src="${p.foto}" alt="${p.titulo}">` : '<div class="hero-img-placeholder">🏠</div>'}
+      <span class="cat-badge ${p.categoria}">${catLabel(p.categoria)}</span>
+    </div>
+    <div class="content">
+      <span class="project-code">Código: ${p.codigo}</span>
+      <div class="project-title">${p.titulo}</div>
+      <div class="specs-grid">
+        <div class="spec-card"><span class="icon">📐</span><span class="val">${p.terreno}</span><span class="label">Terreno</span></div>
+        <div class="spec-card"><span class="icon">🏠</span><span class="val">${p.area}m²</span><span class="label">Área Total</span></div>
+        <div class="spec-card"><span class="icon">🛏</span><span class="val">${p.quartos}</span><span class="label">Quartos</span></div>
+        <div class="spec-card"><span class="icon">🚗</span><span class="val">${p.vagas}</span><span class="label">Vagas</span></div>
+        <div class="spec-card"><span class="icon">🚿</span><span class="val">${p.banheiros}</span><span class="label">Banheiros</span></div>
+        <div class="spec-card"><span class="icon">⚡</span><span class="val">Imediata</span><span class="label">Entrega</span></div>
+      </div>
+      <div class="price-box">
+        <div class="price-old">De R$ ${precoOld}</div>
+        <div class="price-main">R$ ${p.preco}</div>
+        <div class="price-pix">⚡ No Pix: R$ ${precoPix} (10% OFF)</div>
+      </div>
+      <div class="section-title">📦 O que você vai receber:</div>
+      <div class="includes-list">
+        <div class="include-item"><span>✓</span>Planta baixa completa em PDF</div>
+        <div class="include-item"><span>✓</span>Arquivo DWG editável (AutoCAD)</div>
+        <div class="include-item"><span>✓</span>Vistas 3D em alta resolução</div>
+        <div class="include-item"><span>✓</span>Cortes e fachadas</div>
+        <div class="include-item"><span>✓</span>Memorial descritivo</div>
+        <div class="include-item"><span>✓</span>Planta de cobertura</div>
+        <div class="include-item"><span>✓</span>Layout de móveis</div>
+        <div class="include-item"><span>✓</span>Suporte via WhatsApp</div>
+      </div>
+      <div class="delivery-box">
+        <strong>⚡ Entrega imediata após pagamento</strong>
+        <p>Você receberá todos os arquivos por email ou WhatsApp em até 5 minutos.</p>
+      </div>
+    </div>
+    <div class="buy-bar">
+      <a href="https://wa.me/5521978819116?text=Olá! Tenho interesse no ${p.codigo} — ${p.titulo}" target="_blank" class="whats-btn">💬</a>
+      <button class="buy-btn" onclick="openModal('${p.codigo}','${p.titulo}','${p.preco}')">COMPRAR AGORA — R$ ${p.preco}</button>
+    </div>
+  `;
+}
+
+function catLabel(c) {
+  const m={terrea:'Casa Térrea',sobrado:'Sobrado',comercial:'Comercial',alto:'Alto Padrão'};
+  return m[c]||c;
+}
+
+function openModal(code,title,price) {
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalSub').textContent = code + ' — Selecione o pagamento';
+  document.getElementById('modalPrice').textContent = 'R$ ' + price;
+  document.getElementById('purchaseModal').classList.add('open');
+}
+
+function closeModal(){document.getElementById('purchaseModal').classList.remove('open');}
+function closeBg(e){if(e.target===document.getElementById('purchaseModal'))closeModal();}
+
+function selectPay(el){
+  document.querySelectorAll('.pay-opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function confirmBuy(){
+  closeModal();
+  showToast('✅ Redirecionando para pagamento...');
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+carregarProjeto();
+</script>
+</body>
+</html>
