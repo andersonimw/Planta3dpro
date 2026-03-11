@@ -2,10 +2,30 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const mongoose = require('mongoose');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 const SENHA = '1234';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://andersonimwsl_db_user:3FMqcTLqpyA35h8h@cluster0.nzrrxsk.mongodb.net/planta3dpro?appName=Cluster0';
+
+mongoose.connect(MONGODB_URI).then(() => console.log('MongoDB conectado!')).catch(err => console.log('Erro MongoDB:', err));
+
+const ProjetoSchema = new mongoose.Schema({
+  codigo: String,
+  categoria: String,
+  titulo: String,
+  terreno: String,
+  area: String,
+  quartos: String,
+  vagas: String,
+  banheiros: String,
+  preco: String,
+  foto: String,
+  midia: Array
+}, { timestamps: true });
+
+const Projeto = mongoose.model('Projeto', ProjetoSchema);
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -49,26 +69,34 @@ app.post('/upload-multiplo', upload.array('arquivos', 20), (req, res) => {
   res.json({ ok: true, arquivos });
 });
 
-app.post('/salvar-projetos', (req, res) => {
-  fs.writeFileSync('./projetos.json', JSON.stringify(req.body, null, 2));
-  res.json({ ok: true });
+app.post('/salvar-projetos', async (req, res) => {
+  try {
+    const projetos = req.body;
+    await Projeto.deleteMany({});
+    await Projeto.insertMany(projetos);
+    res.json({ ok: true });
+  } catch (err) {
+    res.json({ ok: false, erro: err.message });
+  }
 });
 
-app.get('/projetos', (req, res) => {
-  if (fs.existsSync('./projetos.json')) {
-    res.json(JSON.parse(fs.readFileSync('./projetos.json')));
-  } else {
+app.get('/projetos', async (req, res) => {
+  try {
+    const projetos = await Projeto.find().sort({ createdAt: -1 });
+    res.json(projetos);
+  } catch (err) {
     res.json([]);
   }
 });
 
-app.get('/projeto/:codigo', (req, res) => {
-  if (fs.existsSync('./projetos.json')) {
-    const projetos = JSON.parse(fs.readFileSync('./projetos.json'));
-    const projeto = projetos.find(p => p.codigo === req.params.codigo);
+app.get('/projeto/:codigo', async (req, res) => {
+  try {
+    const projeto = await Projeto.findOne({ codigo: req.params.codigo });
     if (projeto) return res.json(projeto);
+    res.status(404).json({ erro: 'Projeto não encontrado' });
+  } catch (err) {
+    res.status(500).json({ erro: err.message });
   }
-  res.status(404).json({ erro: 'Projeto não encontrado' });
 });
 
 app.listen(PORT, () => {
