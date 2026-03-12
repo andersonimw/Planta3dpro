@@ -58,7 +58,44 @@ app.post('/login', (req, res) => {
 app.post('/upload-multiplo', upload.array('arquivos', 20), async (req, res) => {
   if (!req.files || req.files.length === 0) return res.json({ ok: false });
   try {
-    const resultados = await Promise.all(req.files.map(f => {
+      app.post('/upload-multiplo', upload.array('arquivos', 20), async (req, res) => {
+  console.log('Upload recebido:', req.files ? req.files.length : 0, 'arquivos');
+  if (!req.files || req.files.length === 0) return res.json({ ok: false, erro: 'Nenhum arquivo' });
+  try {
+      const resultados = await Promise.all(req.files.map(f => {
+      const ext = path.extname(f.originalname).toLowerCase();
+      const isVideo = ['.mp4','.mov','.avi','.webm'].includes(ext);
+      const isImagem = ['.jpeg','.jpg','.png','.gif','.webp'].includes(ext);
+      const resourceType = isVideo ? 'video' : isImagem ? 'image' : 'raw';
+      console.log('Enviando para Cloudinary:', f.originalname, resourceType);
+      return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { resource_type: resourceType, folder: 'planta3dpro' },
+          (error, result) => {
+            if (error) {
+              console.log('Erro Cloudinary:', error);
+              reject(error);
+            } else {
+              console.log('Upload OK:', result.secure_url);
+              resolve({
+                url: result.secure_url,
+                nome: f.originalname,
+                tipo: isVideo ? 'video' : isImagem ? 'imagem' : 'arquivo',
+                ext: ext,
+                public_id: result.public_id
+              });
+            }
+          }
+        );
+        stream.end(f.buffer);
+      });
+    }));
+    res.json({ ok: true, arquivos: resultados });
+  } catch (err) {
+    console.log('Erro upload:', err.message);
+    res.json({ ok: false, erro: err.message });
+  }
+});
       const ext = path.extname(f.originalname).toLowerCase();
       const isVideo = ['.mp4','.mov','.avi','.webm'].includes(ext);
       const isImagem = ['.jpeg','.jpg','.png','.gif','.webp'].includes(ext);
