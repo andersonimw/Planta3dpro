@@ -22,7 +22,8 @@ const ProjetoSchema = new mongoose.Schema({
   banheiros: String,
   preco: String,
   foto: String,
-  midia: Array
+  midia: Array,
+  arquivos: Array
 }, { timestamps: true });
 
 const Projeto = mongoose.model('Projeto', ProjetoSchema);
@@ -40,13 +41,12 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
-  limits: { fileSize: 50 * 1024 * 1024 },
+  limits: { fileSize: 100 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
-    const allowed = /jpeg|jpg|png|gif|webp|mp4|mov|avi|webm/;
-    const ext = allowed.test(path.extname(file.originalname).toLowerCase());
-    const mime = allowed.test(file.mimetype);
-    if (ext && mime) return cb(null, true);
-    cb(new Error('Arquivo não permitido'));
+    const ext = path.extname(file.originalname).toLowerCase();
+    const allowed = ['.jpeg','.jpg','.png','.gif','.webp','.mp4','.mov','.avi','.webm','.ifc','.dwg','.pdf','.zip'];
+    if (allowed.includes(ext)) return cb(null, true);
+    cb(new Error('Arquivo não permitido: ' + ext));
   }
 });
 
@@ -62,10 +62,17 @@ app.post('/login', (req, res) => {
 
 app.post('/upload-multiplo', upload.array('arquivos', 20), (req, res) => {
   if (!req.files || req.files.length === 0) return res.json({ ok: false });
-  const arquivos = req.files.map(f => ({
-    url: '/imagens/' + f.filename,
-    tipo: f.mimetype.startsWith('video') ? 'video' : 'imagem'
-  }));
+  const arquivos = req.files.map(f => {
+    const ext = path.extname(f.originalname).toLowerCase();
+    const isVideo = ['.mp4','.mov','.avi','.webm'].includes(ext);
+    const isImagem = ['.jpeg','.jpg','.png','.gif','.webp'].includes(ext);
+    return {
+      url: '/imagens/' + f.filename,
+      nome: f.originalname,
+      tipo: isVideo ? 'video' : isImagem ? 'imagem' : 'arquivo',
+      ext: ext
+    };
+  });
   res.json({ ok: true, arquivos });
 });
 
