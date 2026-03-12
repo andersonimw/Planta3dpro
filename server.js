@@ -3,11 +3,18 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const mongoose = require('mongoose');
+const cloudinary = require('cloudinary').v2;
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const SENHA = '1234';
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://andersonimwsl_db_user:3FMqcTLqpyA35h8h@cluster0.nzrrxsk.mongodb.net/planta3dpro?appName=Cluster0';
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'denymnd45',
+  api_key: process.env.CLOUDINARY_API_KEY || '392736843463845',
+  api_secret: process.env.CLOUDINARY_API_SECRET || 'NboIl8Vlea60734b'
+});
 
 mongoose.connect(MONGODB_URI).then(() => console.log('MongoDB conectado!')).catch(err => console.log('Erro MongoDB:', err));
 
@@ -28,19 +35,8 @@ const ProjetoSchema = new mongoose.Schema({
 
 const Projeto = mongoose.model('Projeto', ProjetoSchema);
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const dir = './imagens';
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir);
-    cb(null, dir);
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + Math.random().toString(36).substr(2,6) + path.extname(file.originalname));
-  }
-});
-
 const upload = multer({
-  storage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: 100 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     const ext = path.extname(file.originalname).toLowerCase();
@@ -53,27 +49,41 @@ const upload = multer({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('.'));
-app.use('/imagens', express.static('imagens'));
 
 app.post('/login', (req, res) => {
   if (req.body.senha === SENHA) res.json({ ok: true });
   else res.json({ ok: false });
 });
 
-app.post('/upload-multiplo', upload.array('arquivos', 20), (req, res) => {
+app.post('/upload-multiplo', upload.array('arquivos', 20), async (req, res) => {
   if (!req.files || req.files.length === 0) return res.json({ ok: false });
-  const arquivos = req.files.map(f => {
-    const ext = path.extname(f.originalname).toLowerCase();
-    const isVideo = ['.mp4','.mov','.avi','.webm'].includes(ext);
-    const isImagem = ['.jpeg','.jpg','.png','.gif','.webp'].includes(ext);
-    return {
-      url: '/imagens/' + f.filename,
-      nome: f.originalname,
-      tipo: isVideo ? 'video' : isImagem ? 'imagem' : 'arquivo',
-      ext: ext
-    };
-  });
-  res.json({ ok: true, arquivos });
+  try {
+    const resultados = await Promise.all(req.files.map(f => {
+      const ext = path.extname(f.originalname).toLowerCase();
+      const isVideo = ['.mp4','.mov','.avi','.webm'].includes(ext);
+      const isImagem = ['.jpeg','.jpg','.png','.gif','.webp'].includes(ext);
+      const resourceType = isVideo ? 'video' : isImagem ? 'image' : 'raw';
+      return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { resource_type: resourceType, folder: 'planta3dpro' },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve({
+              url: result.secure_url,
+              nome: f.originalname,
+              tipo: isVideo ? 'video' : isImagem ? 'imagem' : 'arquivo',
+              ext: ext,
+              public_id: result.public_id
+            });
+          }
+        );
+        stream.end(f.buffer);
+      });
+    }));
+    res.json({ ok: true, arquivos: resultados });
+  } catch (err) {
+    res.json({ ok: false, erro: err.message });
+  }
 });
 
 app.post('/salvar-projetos', async (req, res) => {
