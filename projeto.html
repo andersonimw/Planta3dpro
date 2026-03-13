@@ -123,11 +123,11 @@ function renderizar(){
     <div class="carrossel-wrap"><div class="carrossel-inner">
       <div class="carrossel" id="carrossel">
         <div class="carrossel-track" id="track">
-          ${midias.map((m,i)=>`<div class="carrossel-item" id="item-${i}">${m.tipo==='video'?`<video id="vid-${i}" src="${m.url}" muted playsinline loop preload="auto"></video><div class="play-overlay" id="overlay-${i}" onclick="togglePlay(${i})"><div class="play-btn-big">▶</div></div><div class="tipo-badge-vid">🎥 Vídeo</div>`:`<img src="${m.url}" alt="Foto ${i+1}">`}</div>`).join('')}
+          ${midias.map((m,i)=>`<div class="carrossel-item" id="item-${i}">${m.tipo==='video'?`<video id="vid-${i}" src="${m.url}" playsinline preload="auto"></video><div class="play-overlay" id="overlay-${i}" onclick="togglePlay(${i})"><div class="play-btn-big">▶</div></div><div class="tipo-badge-vid">🎥 Vídeo</div>`:`<img src="${m.url}" alt="Foto ${i+1}">`}</div>`).join('')}
         </div>
         ${midias.length>1?`<button class="carrossel-btn prev" onclick="moverCarrossel(-1)">‹</button><button class="carrossel-btn next" onclick="moverCarrossel(1)">›</button><div class="carrossel-dots">${midias.map((_,i)=>`<div class="dot ${i===0?'active':''}" onclick="irPara(${i})"></div>`).join('')}</div><div class="carrossel-counter"><span id="counter">1</span>/${midias.length}</div>`:''}
       </div>
-      ${midias.length>1?`<div class="thumbnails" id="thumbs">${midias.map((m,i)=>`<div class="thumb ${i===0?'active':''}" onclick="irPara(${i})" id="thumb-${i}">${m.tipo==='video'?`<video src="${m.url}" muted preload="metadata"></video><div class="thumb-vid-icon">▶</div>`:`<img src="${m.url}">`}</div>`).join('')}</div>`:''}
+      ${midias.length>1?`<div class="thumbnails" id="thumbs">${midias.map((m,i)=>`<div class="thumb ${i===0?'active':''}" onclick="irPara(${i})" id="thumb-${i}">${m.tipo==='video'?`<video src="${m.url}" preload="metadata"></video><div class="thumb-vid-icon">▶</div>`:`<img src="${m.url}">`}</div>`).join('')}</div>`:''}
     </div></div>`:'<div style="height:200px;background:var(--dark);display:flex;align-items:center;justify-content:center;font-size:40px">🏠</div>';
   document.getElementById('app').innerHTML=`
     ${carrosselHTML}
