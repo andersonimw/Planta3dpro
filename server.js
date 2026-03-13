@@ -1,7 +1,6 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
 const mongoose = require('mongoose');
 const cloudinary = require('cloudinary').v2;
 
@@ -19,18 +18,10 @@ cloudinary.config({
 mongoose.connect(MONGODB_URI).then(() => console.log('MongoDB conectado!')).catch(err => console.log('Erro MongoDB:', err));
 
 const ProjetoSchema = new mongoose.Schema({
-  codigo: String,
-  categoria: String,
-  titulo: String,
-  terreno: String,
-  area: String,
-  quartos: String,
-  vagas: String,
-  banheiros: String,
-  preco: String,
-  foto: String,
-  midia: Array,
-  arquivos: Array
+  codigo: String, categoria: String, titulo: String,
+  terreno: String, area: String, quartos: String,
+  vagas: String, banheiros: String, preco: String,
+  foto: String, midia: Array, arquivos: Array
 }, { timestamps: true });
 
 const Projeto = mongoose.model('Projeto', ProjetoSchema);
@@ -42,7 +33,7 @@ const upload = multer({
     const ext = path.extname(file.originalname).toLowerCase();
     const allowed = ['.jpeg','.jpg','.png','.gif','.webp','.mp4','.mov','.avi','.webm','.ifc','.dwg','.pdf','.zip'];
     if (allowed.includes(ext)) return cb(null, true);
-    cb(new Error('Arquivo não permitido: ' + ext));
+    cb(new Error('Arquivo nao permitido: ' + ext));
   }
 });
 
@@ -56,62 +47,23 @@ app.post('/login', (req, res) => {
 });
 
 app.post('/upload-multiplo', upload.array('arquivos', 20), async (req, res) => {
-  if (!req.files || req.files.length === 0) return res.json({ ok: false });
-  try {
-      app.post('/upload-multiplo', upload.array('arquivos', 20), async (req, res) => {
-  console.log('Upload recebido:', req.files ? req.files.length : 0, 'arquivos');
-  if (!req.files || req.files.length === 0) return res.json({ ok: false, erro: 'Nenhum arquivo' });
-  try {
-      const resultados = await Promise.all(req.files.map(f => {
-      const ext = path.extname(f.originalname).toLowerCase();
-      const isVideo = ['.mp4','.mov','.avi','.webm'].includes(ext);
-      const isImagem = ['.jpeg','.jpg','.png','.gif','.webp'].includes(ext);
-      const resourceType = isVideo ? 'video' : isImagem ? 'image' : 'raw';
-      console.log('Enviando para Cloudinary:', f.originalname, resourceType);
-      return new Promise((resolve, reject) => {
-        const stream = cloudinary.uploader.upload_stream(
-          { resource_type: resourceType, folder: 'planta3dpro' },
-          (error, result) => {
-            if (error) {
-              console.log('Erro Cloudinary:', error);
-              reject(error);
-            } else {
-              console.log('Upload OK:', result.secure_url);
-              resolve({
-                url: result.secure_url,
-                nome: f.originalname,
-                tipo: isVideo ? 'video' : isImagem ? 'imagem' : 'arquivo',
-                ext: ext,
-                public_id: result.public_id
-              });
-            }
-          }
-        );
-        stream.end(f.buffer);
-      });
-    }));
-    res.json({ ok: true, arquivos: resultados });
-  } catch (err) {
-    console.log('Erro upload:', err.message);
-    res.json({ ok: false, erro: err.message });
+  console.log('Upload recebido:', req.files ? req.files.length : 0);
+  if (!req.files || req.files.length === 0) {
+    return res.json({ ok: false, erro: 'Nenhum arquivo' });
   }
-});
+  try {
+    const resultados = await Promise.all(req.files.map(f => {
       const ext = path.extname(f.originalname).toLowerCase();
       const isVideo = ['.mp4','.mov','.avi','.webm'].includes(ext);
       const isImagem = ['.jpeg','.jpg','.png','.gif','.webp'].includes(ext);
       const resourceType = isVideo ? 'video' : isImagem ? 'image' : 'raw';
+      console.log('Enviando:', f.originalname, resourceType);
       return new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
           { resource_type: resourceType, folder: 'planta3dpro' },
           (error, result) => {
-            if (error) reject(error);
-            else resolve({
-              url: result.secure_url,
-              nome: f.originalname,
-              tipo: isVideo ? 'video' : isImagem ? 'imagem' : 'arquivo',
-              ext: ext,
-              public_id: result.public_id
-            });
+            if (error) { console.log('Erro Cloudinary:', error); reject(error); }
+            else { console.log('OK:', result.secure_url); resolve({ url: result.secure_url, nome: f.originalname, tipo: isVideo ? 'video' : isImagem ? 'imagem' : 'arquivo', ext: ext }); }
           }
         );
         stream.end(f.buffer);
@@ -119,15 +71,15 @@ app.post('/upload-multiplo', upload.array('arquivos', 20), async (req, res) => {
     }));
     res.json({ ok: true, arquivos: resultados });
   } catch (err) {
+    console.log('Erro:', err.message);
     res.json({ ok: false, erro: err.message });
   }
 });
 
 app.post('/salvar-projetos', async (req, res) => {
   try {
-    const projetos = req.body;
     await Projeto.deleteMany({});
-    await Projeto.insertMany(projetos);
+    await Projeto.insertMany(req.body);
     res.json({ ok: true });
   } catch (err) {
     res.json({ ok: false, erro: err.message });
@@ -147,7 +99,7 @@ app.get('/projeto/:codigo', async (req, res) => {
   try {
     const projeto = await Projeto.findOne({ codigo: req.params.codigo });
     if (projeto) return res.json(projeto);
-    res.status(404).json({ erro: 'Projeto não encontrado' });
+    res.status(404).json({ erro: 'Projeto nao encontrado' });
   } catch (err) {
     res.status(500).json({ erro: err.message });
   }
