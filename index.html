@@ -13,62 +13,71 @@
 <meta property='og:url' content='https://planta3dpro.onrender.com'>
 <meta property='og:type' content='website'>
 <link rel='canonical' href='https://planta3dpro.onrender.com'>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
+:root{--black:#0A0A0A;--dark:#111111;--card:#181818;--wine:#7B1C2E;--wine-light:#9B2236;--wine-dark:#5A1020;--orange:#E8621A;--orange-light:#FF7A30;--orange-dim:rgba(232,98,26,0.15);--text:#F0EDE8;--muted:#888;--border:rgba(123,28,46,0.3)}
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--green:#22C55E;--navy:#1E293B;--light:#F1F5F9;--white:#fff;--border:#E2E8F0;--muted:#64748B}
-body{font-family:-apple-system,sans-serif;background:var(--light);color:var(--navy);max-width:480px;margin:0 auto}
-nav{background:#fff;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid var(--border);box-shadow:0 1px 4px rgba(0,0,0,.06)}
-.logo{font-size:17px;font-weight:700;color:var(--navy)}.logo span{color:var(--green)}
-.hero{background:linear-gradient(160deg,#0F172A,#1E293B);padding:28px 16px 32px;color:#fff;text-align:center}
-.hero-tag{display:inline-block;background:var(--green);color:#fff;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:4px 14px;border-radius:20px;margin-bottom:14px}
-.hero h1{font-size:24px;font-weight:800;line-height:1.25;margin-bottom:10px}
-.hero h1 span{color:var(--green)}
-.hero p{font-size:14px;color:rgba(255,255,255,.72);line-height:1.6;margin-bottom:22px}
+body{font-family:'Barlow',sans-serif;background:var(--black);color:var(--text);max-width:480px;margin:0 auto}
+nav{background:rgba(10,10,10,0.97);backdrop-filter:blur(12px);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid var(--border)}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--text)}
+.logo span{color:var(--orange)}
+.nav-badge{background:var(--wine);color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;letter-spacing:1px;text-transform:uppercase}
+.hero{background:linear-gradient(160deg,#1A0810 0%,#0A0A0A 50%,#1A0D05 100%);padding:48px 20px 40px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-60px;right:-60px;width:280px;height:280px;background:radial-gradient(circle,rgba(123,28,46,0.3) 0%,transparent 70%);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:-40px;left:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(232,98,26,0.2) 0%,transparent 70%);pointer-events:none}
+.hero-tag{display:inline-flex;align-items:center;gap:6px;background:var(--orange-dim);border:1px solid rgba(232,98,26,0.4);color:var(--orange-light);font-size:11px;font-weight:600;padding:5px 12px;border-radius:20px;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
+.hero h1{font-family:'Bebas Neue',sans-serif;font-size:38px;letter-spacing:2px;line-height:1.1;margin-bottom:10px;color:var(--text)}
+.hero h1 span{color:var(--orange)}
+.hero p{color:var(--muted);font-size:14px;line-height:1.6;margin-bottom:24px;max-width:340px}
 .hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}
-.benefit{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:12px 10px;text-align:center}
+.benefit{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;padding:12px 10px;text-align:center}
 .benefit-icon{font-size:22px;margin-bottom:6px;display:block}
-.benefit-title{font-size:12px;font-weight:600;color:#fff;display:block;margin-bottom:3px}
-.benefit-desc{font-size:11px;color:rgba(255,255,255,.6);line-height:1.4}
-.hero-cta{display:block;width:100%;background:var(--green);color:#fff;font-size:15px;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:16px;border-radius:10px;border:none;text-decoration:none;text-align:center;box-shadow:0 4px 16px rgba(34,197,94,.4)}
-.filters{background:#1E293B;padding:16px}
-.filters-title{color:#fff;font-size:14px;font-weight:700;margin-bottom:12px}
-.filter-select{width:100%;padding:12px 14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:8px;color:rgba(255,255,255,.85);font-size:14px;appearance:none;font-family:inherit;margin-bottom:10px}
-.filter-btn{width:100%;margin-top:4px;background:var(--green);color:#fff;font-size:14px;font-weight:700;padding:13px;border:none;border-radius:8px;font-family:inherit}
-.section-header{padding:20px 16px 12px;display:flex;align-items:center;justify-content:space-between}
-.section-header h2{font-size:17px;font-weight:700}
-.result-count{font-size:13px;color:var(--muted)}
-.cat-pills{display:flex;gap:8px;padding:0 16px 16px;overflow-x:auto;scrollbar-width:none}
-.cat-pill{white-space:nowrap;padding:7px 16px;border-radius:20px;font-size:13px;font-weight:600;border:2px solid var(--border);background:#fff;color:var(--muted);font-family:inherit}
-.cat-pill.active{background:var(--navy);color:#fff;border-color:var(--navy)}
-.cards-list{padding:0 16px 80px;display:flex;flex-direction:column;gap:16px}
-.card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.07)}
-.card-img{width:100%;height:200px;background:linear-gradient(135deg,#1E293B,#334155);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.benefit-title{font-size:12px;font-weight:600;color:var(--text);display:block;margin-bottom:3px}
+.benefit-desc{font-size:11px;color:var(--muted);line-height:1.4}
+.hero-cta{display:block;width:100%;background:linear-gradient(135deg,var(--orange),var(--wine));color:#fff;font-family:'Barlow',sans-serif;font-size:15px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:16px;border-radius:8px;border:none;cursor:pointer;text-align:center;text-decoration:none;box-shadow:0 4px 20px rgba(232,98,26,0.3)}
+.filters{background:var(--dark);padding:16px 20px;border-bottom:1px solid var(--border)}
+.filters-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--wine-light);margin-bottom:10px}
+.filter-select{width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;font-family:'Barlow',sans-serif;appearance:none;margin-bottom:10px}
+.filter-btn{width:100%;margin-top:4px;background:linear-gradient(135deg,var(--orange),var(--wine));color:#fff;font-size:14px;font-weight:700;padding:13px;border:none;border-radius:8px;font-family:'Barlow',sans-serif;cursor:pointer;letter-spacing:0.5px;text-transform:uppercase}
+.section-header{padding:20px 20px 12px;display:flex;align-items:center;justify-content:space-between}
+.section-header h2{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1.5px;color:var(--text)}
+.result-count{font-size:12px;color:var(--muted);background:rgba(255,255,255,0.05);padding:4px 10px;border-radius:20px}
+.cat-pills{display:flex;gap:8px;padding:0 20px 16px;overflow-x:auto;scrollbar-width:none}
+.cat-pill{white-space:nowrap;padding:7px 16px;border-radius:20px;font-size:12px;font-weight:600;border:1px solid rgba(123,28,46,0.5);background:transparent;color:var(--muted);cursor:pointer;transition:all 0.2s;letter-spacing:0.5px;font-family:'Barlow',sans-serif}
+.cat-pill.active{background:var(--wine);border-color:var(--wine);color:#fff}
+.cat-pill:hover:not(.active){border-color:var(--orange);color:var(--orange)}
+.cards-list{padding:0 20px 100px;display:flex;flex-direction:column;gap:16px}
+.card{background:var(--card);border-radius:14px;overflow:hidden;border:1px solid rgba(123,28,46,0.2);transition:border-color 0.3s,transform 0.2s;cursor:pointer}
+.card:hover{border-color:var(--orange);transform:translateY(-2px)}
+.card-img{width:100%;height:200px;background:linear-gradient(135deg,#1A0810,#1A0D05);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
 .card-img img{width:100%;height:100%;object-fit:cover}
 .card-img-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:48px}
-.cat-badge{position:absolute;top:12px;left:12px;background:var(--green);color:#fff;font-size:12px;font-weight:700;padding:5px 14px;border-radius:20px}
-.cat-badge.sobrado{background:#3B82F6}
-.cat-badge.comercial{background:#F97316}
-.cat-badge.alto{background:#8B5CF6}
+.cat-badge{position:absolute;top:12px;left:12px;background:var(--wine);color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;text-transform:uppercase;letter-spacing:1px;font-family:'Barlow',sans-serif}
+.cat-badge.sobrado{background:var(--wine)}
+.cat-badge.comercial{background:var(--orange)}
+.cat-badge.alto{background:var(--wine-dark)}
 .card-body{padding:16px}
-.card-code{font-size:12px;font-weight:700;color:var(--green);margin-bottom:6px}
-.card-title{font-size:16px;font-weight:800;color:var(--navy);line-height:1.3;margin-bottom:14px;text-transform:uppercase}
-.card-specs{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
-.spec-row{display:flex;align-items:center;gap:10px;font-size:13px}
-.card-btn{display:block;width:100%;background:var(--navy);color:#fff;font-size:14px;font-weight:700;text-align:center;padding:14px;border-radius:8px;border:none;font-family:inherit;cursor:pointer;text-decoration:none}
+.card-code{font-size:11px;font-weight:700;color:var(--orange);margin-bottom:6px;letter-spacing:1px;text-transform:uppercase}
+.card-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:var(--text);margin-bottom:12px}
+.card-specs{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.spec-row{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.card-btn{display:block;width:100%;background:linear-gradient(135deg,var(--orange),var(--wine));color:#fff;font-size:14px;font-weight:700;text-align:center;padding:14px;border-radius:8px;border:none;font-family:'Barlow',sans-serif;cursor:pointer;text-decoration:none;letter-spacing:0.5px;text-transform:uppercase}
 .empty-state{text-align:center;padding:40px 20px;color:var(--muted)}
 .empty-state div{font-size:48px;margin-bottom:12px}
-.bottom-nav{background:#fff;padding:10px 0 14px;display:flex;justify-content:space-around;border-top:1px solid var(--border);position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;z-index:99}
-.bnav-item{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:600;color:var(--muted);background:none;border:none;font-family:inherit;min-width:64px}
-.bnav-item.active{color:var(--green)}
+.bottom-nav{background:rgba(17,17,17,0.97);backdrop-filter:blur(16px);padding:10px 0 14px;display:flex;justify-content:space-around;border-top:1px solid var(--border);position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;z-index:99}
+.bnav-item{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:600;color:var(--muted);background:none;border:none;font-family:'Barlow',sans-serif;min-width:64px;cursor:pointer;text-transform:uppercase;letter-spacing:0.5px}
+.bnav-item.active{color:var(--orange)}
 .bnav-icon{font-size:20px}
-.float-cart{position:fixed;bottom:70px;right:16px;width:54px;height:54px;background:var(--navy);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;border:none;z-index:150;box-shadow:0 4px 16px rgba(0,0,0,.3)}
-.cart-badge{position:absolute;top:-4px;right:-4px;width:20px;height:20px;background:var(--green);border-radius:50%;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;color:#fff}
-.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--navy);color:#fff;padding:12px 22px;border-radius:8px;font-size:14px;font-weight:600;opacity:0;transition:all .3s;z-index:500;white-space:nowrap;pointer-events:none;border-left:3px solid var(--green)}
+.whatsapp-float{position:fixed;bottom:75px;left:16px;width:54px;height:54px;background:linear-gradient(135deg,#25D366,#128C7E);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;text-decoration:none;box-shadow:0 4px 16px rgba(37,211,102,0.5);z-index:200;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 4px 16px rgba(37,211,102,0.5)}50%{box-shadow:0 4px 26px rgba(37,211,102,0.8)}}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--card);color:var(--text);padding:12px 22px;border-radius:8px;font-size:14px;font-weight:600;font-family:'Barlow',sans-serif;opacity:0;transition:all .3s;z-index:500;white-space:nowrap;pointer-events:none;border-left:3px solid var(--orange)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
 </head>
 <body>
-<nav><div class="logo">Planta 3D<span> Pro</span></div><span>☰</span></nav>
+<nav><div class="logo">PLANTA <span>3D</span> PRO</div><div class="nav-badge">Online</div></nav>
 <div class="hero">
 <div class="hero-tag">🏆 Projetos Profissionais</div>
 <h1>Plantas 3D <span>Profissionais</span><br>para sua Obra</h1>
@@ -98,89 +107,22 @@ nav{background:#fff;padding:14px 16px;display:flex;align-items:center;justify-co
 </div>
 <div class="cards-list" id="cardsList"><div class="empty-state"><div>⏳</div><p>Carregando projetos...</p></div></div>
 </div>
+<a href="https://wa.me/5521978819116" target="_blank" class="whatsapp-float">💬</a>
 <div class="bottom-nav">
 <button class="bnav-item active"><span class="bnav-icon">🏠</span>Início</button>
 <button class="bnav-item" onclick="window.location.href='#catalogo'"><span class="bnav-icon">📂</span>Projetos</button>
 <button class="bnav-item" onclick="window.open('https://wa.me/5521978819116')"><span class="bnav-icon">💬</span>WhatsApp</button>
 <button class="bnav-item" onclick="window.location.href='admin.html'"><span class="bnav-icon">⚙️</span>Admin</button>
 </div>
-
-<button class="float-cart" onclick="showToast('Carrinho vazio!')">🛒<span class="cart-badge" id="cartCount">0</span></button>
-
-<a href="https://wa.me/5521978819116" target="_blank" style="position:fixed;bottom:75px;left:16px;width:54px;height:54px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;text-decoration:none;box-shadow:0 4px 16px rgba(37,211,102,.5);z-index:200;">💬</a>
-
 <div class="toast" id="toast"></div>
-
 <script>
-let todosProj=[];
-let filtroAtivo='';
-
-async function carregarProjetos(){
-try{
-const res=await fetch('/projetos');
-todosProj=await res.json();
-renderCards(todosProj);
-}catch(e){
-document.getElementById('cardsList').innerHTML='<div class="empty-state"><div>😕</div><p>Erro ao carregar projetos.</p></div>';
-}
-}
-
-function renderCards(lista){
-const el=document.getElementById('cardsList');
-document.getElementById('resultCount').textContent=lista.length+' projeto'+(lista.length!==1?'s':'');
-if(lista.length===0){el.innerHTML='<div class="empty-state"><div>🏗️</div><p>Nenhum projeto encontrado.</p></div>';return;}
-el.innerHTML=lista.map((p)=>`
-<div class="card">
-<div class="card-img">
-${p.foto?`<img src="${p.foto}" alt="${p.titulo}">`:'<div class="card-img-placeholder">🏠</div>'}
-<span class="cat-badge ${p.categoria}">${catLabel(p.categoria)}</span>
-</div>
-<div class="card-body">
-<div class="card-code">Código do Projeto: ${p.codigo}</div>
-<div class="card-title">${p.titulo}</div>
-<div class="card-specs">
-<div class="spec-row">📐 Terreno: ${p.terreno}</div>
-<div class="spec-row">🏠 Área: ${p.area}m²</div>
-<div class="spec-row">🛏 Quartos: ${p.quartos}</div>
-<div class="spec-row">🚗 Vagas: ${p.vagas}</div>
-<div class="spec-row">🚿 Banheiros: ${p.banheiros}</div>
-</div>
-<a href="/projeto.html?codigo=${p.codigo}" class="card-btn">Ver Projeto →</a>
-</div>
-</div>
-`).join('');
-}
-
-function catLabel(c){
-const m={terrea:'Casa Térrea',sobrado:'Sobrado',comercial:'Comercial',alto:'Alto Padrão'};
-return m[c]||c;
-}
-
-function filterPill(btn,cat){
-document.querySelectorAll('.cat-pill').forEach(b=>b.classList.remove('active'));
-btn.classList.add('active');
-filtroAtivo=cat;
-aplicarFiltros();
-}
-
-function aplicarFiltros(){
-let lista=todosProj;
-if(filtroAtivo)lista=lista.filter(p=>p.categoria===filtroAtivo);
-const q=document.getElementById('filtQ').value;
-if(q==='4')lista=lista.filter(p=>parseInt(p.quartos)>=4);
-else if(q)lista=lista.filter(p=>p.quartos===q);
-const cat=document.getElementById('filtCat').value;
-if(cat)lista=lista.filter(p=>p.categoria===cat);
-renderCards(lista);
-}
-
-function showToast(msg){
-const t=document.getElementById('toast');
-t.textContent=msg;
-t.classList.add('show');
-setTimeout(()=>t.classList.remove('show'),3000);
-}
-
+let todosProj=[];let filtroAtivo='';
+async function carregarProjetos(){try{const res=await fetch('/projetos');todosProj=await res.json();renderCards(todosProj);}catch(e){document.getElementById('cardsList').innerHTML='<div class="empty-state"><div>😕</div><p>Erro ao carregar projetos.</p></div>';}}
+function renderCards(lista){const el=document.getElementById('cardsList');document.getElementById('resultCount').textContent=lista.length+' projeto'+(lista.length!==1?'s':'');if(lista.length===0){el.innerHTML='<div class="empty-state"><div>🏗️</div><p>Nenhum projeto encontrado.</p></div>';return;}el.innerHTML=lista.map((p)=>`<div class="card"><div class="card-img">${p.foto?`<img src="${p.foto}" alt="${p.titulo}">`:'<div class="card-img-placeholder">🏠</div>'}<span class="cat-badge ${p.categoria}">${catLabel(p.categoria)}</span></div><div class="card-body"><div class="card-code">Código: ${p.codigo}</div><div class="card-title">${p.titulo}</div><div class="card-specs"><div class="spec-row">📐 Terreno: ${p.terreno}</div><div class="spec-row">🏠 Área: ${p.area}m²</div><div class="spec-row">🛏 Quartos: ${p.quartos}</div><div class="spec-row">🚗 Vagas: ${p.vagas}</div><div class="spec-row">🚿 Banheiros: ${p.banheiros}</div></div><a href="/projeto.html?codigo=${p.codigo}" class="card-btn">Ver Projeto →</a></div></div>`).join('');}
+function catLabel(c){const m={terrea:'Casa Térrea',sobrado:'Sobrado',comercial:'Comercial',alto:'Alto Padrão'};return m[c]||c;}
+function filterPill(btn,cat){document.querySelectorAll('.cat-pill').forEach(b=>b.classList.remove('active'));btn.classList.add('active');filtroAtivo=cat;aplicarFiltros();}
+function aplicarFiltros(){let lista=todosProj;if(filtroAtivo)lista=lista.filter(p=>p.categoria===filtroAtivo);const q=document.getElementById('filtQ').value;if(q==='4')lista=lista.filter(p=>parseInt(p.quartos)>=4);else if(q)lista=lista.filter(p=>p.quartos===q);const cat=document.getElementById('filtCat').value;if(cat)lista=lista.filter(p=>p.categoria===cat);renderCards(lista);}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
 carregarProjetos();
 </script>
 </body>
