@@ -4,51 +4,61 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Painel Admin — Planta 3D Pro</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <style>
+:root{--black:#0A0A0A;--dark:#111111;--card:#181818;--wine:#7B1C2E;--wine-light:#9B2236;--orange:#E8621A;--orange-light:#FF7A30;--text:#F0EDE8;--muted:#888;--border:rgba(123,28,46,0.3)}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,sans-serif;background:#F1F5F9;color:#1E293B}
+body{font-family:'Segoe UI',sans-serif;background:var(--black);color:var(--text);min-height:100vh}
 .login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
-.login-box{background:#fff;border-radius:16px;padding:32px;width:100%;max-width:360px;box-shadow:0 4px 24px rgba(0,0,0,.1)}
+.login-box{background:var(--card);border-radius:16px;padding:32px;width:100%;max-width:360px;border:1px solid var(--border)}
 .login-box h1{font-size:22px;font-weight:800;margin-bottom:6px}
-.login-box p{font-size:14px;color:#64748B;margin-bottom:24px}
-.login-box input{width:100%;padding:13px;border:2px solid #E2E8F0;border-radius:8px;font-size:15px;margin-bottom:12px;font-family:inherit}
-.login-box input:focus{outline:none;border-color:#22C55E}
-.btn-green{width:100%;background:#22C55E;color:#fff;font-size:15px;font-weight:700;padding:14px;border:none;border-radius:8px;font-family:inherit;cursor:pointer}
-.btn-red{background:#EF4444;color:#fff;font-size:13px;font-weight:700;padding:8px 16px;border:none;border-radius:8px;font-family:inherit;cursor:pointer}
-.btn-blue{background:#3B82F6;color:#fff;font-size:13px;font-weight:700;padding:8px 16px;border:none;border-radius:8px;font-family:inherit;cursor:pointer}
-.admin-screen{display:none;padding:16px;max-width:600px;margin:0 auto}
-.admin-header{background:#1E293B;color:#fff;padding:16px;border-radius:12px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between}
+.login-box p{font-size:14px;color:var(--muted);margin-bottom:24px}
+.login-box input{width:100%;padding:13px;border:1px solid var(--border);border-radius:8px;font-size:15px;margin-bottom:12px;font-family:inherit;background:var(--dark);color:var(--text)}
+.login-box input:focus{outline:none;border-color:var(--orange)}
+.btn-primary{width:100%;background:linear-gradient(135deg,var(--orange),var(--wine));color:#fff;font-size:15px;font-weight:700;padding:14px;border:none;border-radius:8px;font-family:inherit;cursor:pointer}
+.btn-red{background:#7f1d1d;color:#fff;font-size:13px;font-weight:700;padding:8px 16px;border:none;border-radius:8px;font-family:inherit;cursor:pointer}
+.admin-screen{display:none;padding:16px;max-width:700px;margin:0 auto}
+.admin-header{background:linear-gradient(135deg,var(--wine),#0A0A0A);padding:16px 20px;border-radius:12px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;border:1px solid var(--border)}
 .admin-header h1{font-size:18px;font-weight:800}
-.admin-header span{font-size:13px;color:#22C55E;font-weight:600}
-.card-admin{background:#fff;border-radius:12px;padding:20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
-.card-admin h2{font-size:16px;font-weight:700;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid #F1F5F9}
+.admin-header span{font-size:13px;color:var(--orange);font-weight:600}
+.card-admin{background:var(--card);border-radius:12px;padding:20px;margin-bottom:16px;border:1px solid var(--border)}
+.card-admin h2{font-size:16px;font-weight:700;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);color:var(--orange)}
 .form-group{margin-bottom:12px}
-.form-group label{display:block;font-size:13px;font-weight:600;color:#475569;margin-bottom:5px}
-.form-group input,.form-group select{width:100%;padding:11px;border:2px solid #E2E8F0;border-radius:8px;font-size:14px;font-family:inherit}
-.form-group input:focus,.form-group select:focus{outline:none;border-color:#22C55E}
+.form-group label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.5px}
+.form-group input,.form-group select{width:100%;padding:11px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;background:var(--dark);color:var(--text)}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:var(--orange)}
+.form-group select option{background:var(--dark)}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.upload-area{border:2px dashed #CBD5E1;border-radius:10px;padding:24px;text-align:center;background:#F8FAFC;margin-bottom:12px;cursor:pointer;transition:all .2s}
-.upload-area:hover{border-color:#22C55E;background:#F0FDF4}
-.upload-area.dragover{border-color:#22C55E;background:#F0FDF4}
+.upload-area{border:2px dashed rgba(232,98,26,0.4);border-radius:10px;padding:28px;text-align:center;background:rgba(232,98,26,0.05);margin-bottom:12px;cursor:pointer;transition:all .2s}
+.upload-area:hover,.upload-area.dragover{border-color:var(--orange);background:rgba(232,98,26,0.1)}
 .upload-icon{font-size:36px;margin-bottom:8px}
-.upload-text{font-size:14px;font-weight:600;color:#475569;margin-bottom:4px}
-.upload-sub{font-size:12px;color:#94A3B8}
+.upload-text{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px}
+.upload-sub{font-size:12px;color:var(--muted)}
+.file-types{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+.file-type-badge{background:rgba(123,28,46,0.3);border:1px solid var(--border);color:var(--muted);font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:1px}
 .preview-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
-.preview-item{position:relative;border-radius:8px;overflow:hidden;aspect-ratio:1;background:#E2E8F0}
+.preview-item{position:relative;border-radius:8px;overflow:hidden;aspect-ratio:1;background:var(--dark);border:1px solid var(--border)}
 .preview-item img,.preview-item video{width:100%;height:100%;object-fit:cover}
-.preview-item .remove-btn{position:absolute;top:4px;right:4px;background:rgba(239,68,68,.9);color:#fff;border:none;border-radius:50%;width:22px;height:22px;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.preview-item .tipo-badge{position:absolute;bottom:4px;left:4px;background:rgba(0,0,0,.6);color:#fff;font-size:10px;padding:2px 6px;border-radius:4px}
-.upload-progress{background:#F1F5F9;border-radius:8px;padding:12px;margin-bottom:12px;display:none}
-.progress-bar{background:#E2E8F0;border-radius:4px;height:8px;margin-top:8px;overflow:hidden}
-.progress-fill{background:#22C55E;height:100%;border-radius:4px;transition:width .3s;width:0%}
-.projeto-item{background:#F8FAFC;border-radius:10px;padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;border:1px solid #E2E8F0}
-.projeto-thumb{width:60px;height:60px;border-radius:8px;object-fit:cover;background:#E2E8F0;flex-shrink:0}
+.preview-item .remove-btn{position:absolute;top:4px;right:4px;background:rgba(127,29,29,.95);color:#fff;border:none;border-radius:50%;width:22px;height:22px;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.preview-item .tipo-badge{position:absolute;bottom:4px;left:4px;background:rgba(0,0,0,.8);color:#fff;font-size:10px;padding:2px 6px;border-radius:4px}
+.preview-item .pdf-badge{position:absolute;top:4px;left:4px;background:rgba(232,98,26,.9);color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:700}
+.file-item{background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.file-item-icon{font-size:24px}
+.file-item-name{flex:1;font-size:13px;color:var(--text);word-break:break-all}
+.file-item-badge{background:rgba(123,28,46,0.4);color:var(--wine-light);font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:1px}
+.file-item-remove{background:none;border:none;color:var(--muted);font-size:16px;cursor:pointer;padding:0 4px}
+.upload-progress{background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:12px;display:none}
+.progress-bar{background:rgba(255,255,255,0.1);border-radius:4px;height:8px;margin-top:8px;overflow:hidden}
+.progress-fill{background:linear-gradient(135deg,var(--orange),var(--wine));height:100%;border-radius:4px;transition:width .3s;width:0%}
+.projeto-item{background:var(--dark);border-radius:10px;padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;border:1px solid var(--border)}
+.projeto-thumb{width:60px;height:60px;border-radius:8px;object-fit:cover;background:var(--card);flex-shrink:0}
 .projeto-info{flex:1}
-.projeto-info strong{font-size:14px;display:block}
-.projeto-info span{font-size:12px;color:#64748B}
-.projeto-media-count{font-size:11px;color:#22C55E;font-weight:600}
-.projeto-actions{display:flex;gap:8px}
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:#1E293B;color:#fff;padding:12px 22px;border-radius:8px;font-size:14px;font-weight:600;opacity:0;transition:all .3s;z-index:500;white-space:nowrap;border-left:3px solid #22C55E}
+.projeto-info strong{font-size:14px;display:block;color:var(--text)}
+.projeto-info span{font-size:12px;color:var(--muted)}
+.projeto-media-count{font-size:11px;color:var(--orange);font-weight:600;margin-top:2px}
+.pdf-converting{background:rgba(232,98,26,0.1);border:1px solid rgba(232,98,26,0.3);border-radius:8px;padding:12px;margin-bottom:12px;display:none;text-align:center}
+.pdf-converting p{font-size:13px;color:var(--orange);font-weight:600}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--card);color:var(--text);padding:12px 22px;border-radius:8px;font-size:14px;font-weight:600;opacity:0;transition:all .3s;z-index:500;white-space:nowrap;border-left:3px solid var(--orange)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
 </head>
@@ -59,7 +69,7 @@ body{font-family:-apple-system,sans-serif;background:#F1F5F9;color:#1E293B}
 <h1>🔐 Painel Admin</h1>
 <p>Planta 3D Pro — Área restrita</p>
 <input type="password" id="senhaInput" placeholder="Digite a senha" onkeydown="if(event.key==='Enter')fazerLogin()">
-<button class="btn-green" onclick="fazerLogin()">ENTRAR</button>
+<button class="btn-primary" onclick="fazerLogin()">ENTRAR</button>
 </div>
 </div>
 
@@ -73,16 +83,32 @@ body{font-family:-apple-system,sans-serif;background:#F1F5F9;color:#1E293B}
 <h2>➕ Adicionar Novo Projeto</h2>
 
 <div class="form-group">
-<label>📸 Fotos e Vídeos do Projeto</label>
+<label>📁 Arquivos do Projeto</label>
 <div class="upload-area" id="uploadArea" onclick="document.getElementById('arquivosInput').click()" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
 <div class="upload-icon">📁</div>
 <div class="upload-text">Clique ou arraste arquivos aqui</div>
-<div class="upload-sub">Fotos (JPG, PNG, WEBP) e Vídeos (MP4, MOV) • Máx 50MB cada</div>
+<div class="upload-sub">Fotos, Vídeos, PDF (vira imagem), IFC, DWG, ZIP</div>
+<div class="file-types">
+  <span class="file-type-badge">JPG</span>
+  <span class="file-type-badge">PNG</span>
+  <span class="file-type-badge">MP4</span>
+  <span class="file-type-badge">PDF</span>
+  <span class="file-type-badge">IFC</span>
+  <span class="file-type-badge">DWG</span>
+  <span class="file-type-badge">ZIP</span>
 </div>
-<input type="file" id="arquivosInput" accept="image/*,video/*" multiple style="display:none" onchange="previewArquivos(this.files)">
+</div>
+<input type="file" id="arquivosInput" accept="image/*,video/*,.pdf,.ifc,.dwg,.zip,.dxf" multiple style="display:none" onchange="processarArquivos(this.files)">
+
+<div class="pdf-converting" id="pdfConverting">
+<p>⚙️ Convertendo PDF em imagens... aguarde</p>
+</div>
+
 <div class="preview-grid" id="previewGrid"></div>
+<div id="filesList"></div>
+
 <div class="upload-progress" id="uploadProgress">
-<div style="font-size:13px;font-weight:600;color:#475569" id="uploadProgressText">Enviando arquivos...</div>
+<div style="font-size:13px;font-weight:600;color:var(--text)" id="uploadProgressText">Enviando arquivos...</div>
 <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
 </div>
 </div>
@@ -118,21 +144,23 @@ body{font-family:-apple-system,sans-serif;background:#F1F5F9;color:#1E293B}
 <div class="form-group"><label>Banheiros</label><input type="number" id="banheiros" placeholder="2" min="1"></div>
 <div class="form-group"><label>Preço (R$)</label><input type="text" id="preco" placeholder="290"></div>
 </div>
-<button class="btn-green" onclick="adicionarProjeto()" style="margin-top:8px">✅ SALVAR PROJETO</button>
+<button class="btn-primary" onclick="adicionarProjeto()" style="margin-top:8px">✅ SALVAR PROJETO</button>
 </div>
 
 <div class="card-admin">
 <h2>📋 Projetos Cadastrados</h2>
-<div id="listaProjetos"><p style="color:#94A3B8;font-size:14px">Nenhum projeto ainda.</p></div>
+<div id="listaProjetos"><p style="color:var(--muted);font-size:14px">Nenhum projeto ainda.</p></div>
 </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
+pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
 let projetos=[];
-let arquivosSelecionados=[];
-let arquivosUpload=[];
+let arquivosMidia=[];  // fotos e videos para upload
+let arquivosExtras=[];  // ifc, dwg, zip, pdf original
 
 async function fazerLogin(){
   const senha=document.getElementById('senhaInput').value;
@@ -150,44 +178,99 @@ function handleDragLeave(e){document.getElementById('uploadArea').classList.remo
 function handleDrop(e){
   e.preventDefault();
   document.getElementById('uploadArea').classList.remove('dragover');
-  previewArquivos(e.dataTransfer.files);
+  processarArquivos(e.dataTransfer.files);
 }
 
-function previewArquivos(files){
-  const novos=Array.from(files);
-  arquivosSelecionados=[...arquivosSelecionados,...novos];
+async function processarArquivos(files){
+  const lista=Array.from(files);
+  for(const f of lista){
+    const ext=f.name.split('.').pop().toLowerCase();
+    if(f.type.startsWith('image/')||f.type.startsWith('video/')){
+      arquivosMidia.push(f);
+    } else if(ext==='pdf'){
+      await converterPDFemImagens(f);
+    } else if(['ifc','dwg','zip','dxf'].includes(ext)){
+      arquivosExtras.push(f);
+    }
+  }
   renderPreview();
+  renderFilesList();
+}
+
+async function converterPDFemImagens(file){
+  const pdfConv=document.getElementById('pdfConverting');
+  pdfConv.style.display='block';
+  try{
+    const arrayBuffer=await file.arrayBuffer();
+    const pdf=await pdfjsLib.getDocument({data:arrayBuffer}).promise;
+    const totalPages=pdf.numPages;
+    showToast('📄 PDF com '+totalPages+' página(s), convertendo...');
+    for(let i=1;i<=totalPages;i++){
+      const page=await pdf.getPage(i);
+      const viewport=page.getViewport({scale:2.0});
+      const canvas=document.createElement('canvas');
+      canvas.width=viewport.width;
+      canvas.height=viewport.height;
+      const ctx=canvas.getContext('2d');
+      await page.render({canvasContext:ctx,viewport}).promise;
+      const blob=await new Promise(r=>canvas.toBlob(r,'image/jpeg',0.92));
+      const imgFile=new File([blob],file.name.replace('.pdf',`_pag${i}.jpg`),{type:'image/jpeg'});
+      arquivosMidia.push(imgFile);
+    }
+    showToast('✅ PDF convertido: '+totalPages+' imagem(ns)!');
+  }catch(e){
+    showToast('❌ Erro ao converter PDF');
+    console.log(e);
+  }
+  pdfConv.style.display='none';
 }
 
 function renderPreview(){
   const grid=document.getElementById('previewGrid');
-  if(arquivosSelecionados.length===0){grid.innerHTML='';return;}
-  grid.innerHTML=arquivosSelecionados.map((f,i)=>{
+  const midias=arquivosMidia;
+  if(midias.length===0){grid.innerHTML='';return;}
+  grid.innerHTML=midias.map((f,i)=>{
     const url=URL.createObjectURL(f);
     const isVideo=f.type.startsWith('video');
+    const isPDFPage=f.name.includes('_pag');
     return `<div class="preview-item">
       ${isVideo?`<video src="${url}" muted></video>`:`<img src="${url}">`}
-      <span class="tipo-badge">${isVideo?'🎥 Vídeo':'📸 Foto'}</span>
-      <button class="remove-btn" onclick="removerArquivo(${i})">✕</button>
+      ${isPDFPage?`<span class="pdf-badge">PDF</span>`:''}
+      <span class="tipo-badge">${isVideo?'🎥':'📸'}</span>
+      <button class="remove-btn" onclick="removerMidia(${i})">✕</button>
     </div>`;
   }).join('');
 }
 
-function removerArquivo(i){
-  arquivosSelecionados.splice(i,1);
-  renderPreview();
+function renderFilesList(){
+  const lista=document.getElementById('filesList');
+  if(arquivosExtras.length===0){lista.innerHTML='';return;}
+  lista.innerHTML=arquivosExtras.map((f,i)=>{
+    const ext=f.name.split('.').pop().toUpperCase();
+    const icons={'IFC':'🏗️','DWG':'📐','ZIP':'📦','DXF':'📐'};
+    return `<div class="file-item">
+      <span class="file-item-icon">${icons[ext]||'📄'}</span>
+      <span class="file-item-name">${f.name}</span>
+      <span class="file-item-badge">${ext}</span>
+      <button class="file-item-remove" onclick="removerExtra(${i})">✕</button>
+    </div>`;
+  }).join('');
 }
 
+function removerMidia(i){arquivosMidia.splice(i,1);renderPreview();}
+function removerExtra(i){arquivosExtras.splice(i,1);renderFilesList();}
+
 async function uploadArquivos(){
-  if(arquivosSelecionados.length===0)return[];
+  const todos=[...arquivosMidia,...arquivosExtras];
+  if(todos.length===0)return[];
   const progressEl=document.getElementById('uploadProgress');
   const progressFill=document.getElementById('progressFill');
   const progressText=document.getElementById('uploadProgressText');
   progressEl.style.display='block';
-  progressText.textContent='Enviando '+arquivosSelecionados.length+' arquivo(s)...';
+  progressText.textContent='Enviando '+todos.length+' arquivo(s)...';
   progressFill.style.width='10%';
   const formData=new FormData();
-  arquivosSelecionados.forEach(f=>formData.append('arquivos',f));
+  todos.forEach(f=>formData.append('arquivos',f));
   progressFill.style.width='50%';
   const res=await fetch('/upload-multiplo',{method:'POST',body:formData});
   progressFill.style.width='100%';
@@ -203,6 +286,8 @@ async function adicionarProjeto(){
   }
   showToast('⏳ Enviando arquivos...');
   const arquivos=await uploadArquivos();
+  const soMidia=arquivos.filter(a=>a.tipo==='imagem'||a.tipo==='video');
+  const soExtras=arquivos.filter(a=>a.tipo==='arquivo');
   const projeto={
     codigo:document.getElementById('codigo').value,
     categoria:document.getElementById('categoria').value,
@@ -213,8 +298,9 @@ async function adicionarProjeto(){
     vagas:document.getElementById('vagas').value,
     banheiros:document.getElementById('banheiros').value,
     preco:document.getElementById('preco').value,
-    foto:arquivos.length>0?arquivos[0].url:'',
-    midia:arquivos
+    foto:soMidia.length>0?soMidia[0].url:'',
+    midia:soMidia,
+    arquivos:soExtras
   };
   projetos.push(projeto);
   await salvarProjetos();
@@ -235,16 +321,16 @@ async function carregarProjetos(){
 
 function renderLista(){
   const lista=document.getElementById('listaProjetos');
-  if(projetos.length===0){lista.innerHTML='<p style="color:#94A3B8;font-size:14px">Nenhum projeto ainda.</p>';return;}
+  if(projetos.length===0){lista.innerHTML='<p style="color:var(--muted);font-size:14px">Nenhum projeto ainda.</p>';return;}
   lista.innerHTML=projetos.map((p,i)=>`
     <div class="projeto-item">
-      <img class="projeto-thumb" src="${p.foto||''}" onerror="this.style.background='#E2E8F0';this.style.display='block'">
+      <img class="projeto-thumb" src="${p.foto||''}" onerror="this.style.opacity='0'">
       <div class="projeto-info">
         <strong>${p.codigo} — ${p.titulo}</strong>
-        <span>${p.area}m² • ${p.quartos} quartos • R$ ${p.preco}</span>
-        <div class="projeto-media-count">${p.midia?p.midia.length:p.foto?1:0} arquivo(s) de mídia</div>
+        <span>${p.area||''}m² • ${p.quartos||''} quartos • R$ ${p.preco||''}</span>
+        <div class="projeto-media-count">${p.midia?p.midia.length:p.foto?1:0} mídia(s) • ${p.arquivos?p.arquivos.length:0} arquivo(s)</div>
       </div>
-      <div class="projeto-actions">
+      <div>
         <button class="btn-red" onclick="deletar(${i})">🗑️</button>
       </div>
     </div>
@@ -252,6 +338,7 @@ function renderLista(){
 }
 
 async function deletar(i){
+  if(!confirm('Remover projeto?'))return;
   projetos.splice(i,1);
   await salvarProjetos();
   renderLista();
@@ -260,8 +347,10 @@ async function deletar(i){
 
 function limparForm(){
   ['codigo','titulo','terreno','area','quartos','vagas','banheiros','preco'].forEach(id=>document.getElementById(id).value='');
-  arquivosSelecionados=[];
+  arquivosMidia=[];
+  arquivosExtras=[];
   renderPreview();
+  renderFilesList();
 }
 
 function showToast(msg){
